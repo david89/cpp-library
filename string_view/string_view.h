@@ -104,17 +104,11 @@ public:
     // TODO(dagomez): try to incorporate constexpr std::min here.
     if (len_ < s.len_) {
       const int comparison = traits_type::compare(data_, s.data_, len_);
-      if (comparison != 0) {
-        return comparison;
-      }
-      return -1;
+      return comparison != 0 ? comparison : -1;
     }
 
     const int comparison = traits_type::compare(data_, s.data_, s.len_);
-    if (comparison != 0) {
-      return comparison;
-    }
-    return len_ == s.len_ ? 0 : 1;
+    return comparison != 0 ? comparison : (len_ == s.len_ ? 0 : 1);
   }
   // Compare substring(pos1, count1) with s.
   constexpr int compare(size_type pos1, size_type count1, string_view s) const {
