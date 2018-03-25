@@ -136,7 +136,7 @@ public:
     return substr(pos1, count1).compare(string_view(s, count2));
   }
   size_type find(string_view s, size_type pos = 0) const noexcept;
-  size_type find(value_type c, size_type pos = 0) const noexcept {
+  constexpr size_type find(value_type c, size_type pos = 0) const noexcept {
     return find(string_view(&c, 1), pos);
   }
   constexpr size_type find(const_pointer s, size_type pos, size_type n) const {
@@ -146,7 +146,7 @@ public:
     return find(string_view(s), pos);
   }
   size_type rfind(string_view s, size_type pos = npos) const noexcept;
-  size_type rfind(value_type c, size_type pos = npos) const noexcept {
+  constexpr size_type rfind(value_type c, size_type pos = npos) const noexcept {
     return rfind(string_view(&c, 1), pos);
   }
   constexpr size_type rfind(const_pointer s, size_type pos, size_type n) const {
@@ -156,47 +156,55 @@ public:
     return rfind(string_view(s), pos);
   }
   size_type find_first_of(string_view s, size_type pos = 0) const noexcept;
-  size_type find_first_of(value_type c, size_type pos = 0) const noexcept {
+  constexpr size_type find_first_of(value_type c, size_type pos = 0) const
+      noexcept {
     return find_first_of(string_view(&c, 1), pos);
   }
-  size_type find_first_of(const_pointer s, size_type pos, size_type n) const {
+  constexpr size_type find_first_of(const_pointer s, size_type pos,
+                                    size_type n) const {
     return find_first_of(string_view(s, n), pos);
   }
-  size_type find_first_of(const_pointer s, size_type pos = 0) const {
+  constexpr size_type find_first_of(const_pointer s, size_type pos = 0) const {
     return find_first_of(string_view(s), pos);
   }
   size_type find_last_of(string_view s, size_type pos = npos) const noexcept;
-  size_type find_last_of(value_type c, size_type pos = npos) const noexcept {
+  constexpr size_type find_last_of(value_type c, size_type pos = npos) const
+      noexcept {
     return find_last_of(string_view(&c, 1), pos);
   }
-  size_type find_last_of(const_pointer s, size_type pos, size_type n) const {
+  constexpr size_type find_last_of(const_pointer s, size_type pos,
+                                   size_type n) const {
     return find_last_of(string_view(s, n), pos);
   }
-  size_type find_last_of(const_pointer s, size_type pos = npos) const {
+  constexpr size_type find_last_of(const_pointer s,
+                                   size_type pos = npos) const {
     return find_last_of(string_view(s), pos);
   }
   size_type find_first_not_of(string_view s, size_type pos = 0) const noexcept;
-  size_type find_first_not_of(value_type c, size_type pos = 0) const noexcept {
+  constexpr size_type find_first_not_of(value_type c, size_type pos = 0) const
+      noexcept {
     return find_first_not_of(string_view(&c, 1), pos);
   }
-  size_type find_first_not_of(const_pointer s, size_type pos,
-                              size_type n) const {
+  constexpr size_type find_first_not_of(const_pointer s, size_type pos,
+                                        size_type n) const {
     return find_first_not_of(string_view(s, n), pos);
   }
-  size_type find_first_not_of(const_pointer s, size_type pos = 0) const {
+  constexpr size_type find_first_not_of(const_pointer s,
+                                        size_type pos = 0) const {
     return find_first_not_of(string_view(s), pos);
   }
   size_type find_last_not_of(string_view s, size_type pos = npos) const
       noexcept;
-  size_type find_last_not_of(value_type c, size_type pos = npos) const
+  constexpr size_type find_last_not_of(value_type c, size_type pos = npos) const
       noexcept {
     return find_last_not_of(string_view(&c, 1), pos);
   }
-  size_type find_last_not_of(const_pointer s, size_type pos,
-                             size_type n) const {
+  constexpr size_type find_last_not_of(const_pointer s, size_type pos,
+                                       size_type n) const {
     return find_last_not_of(string_view(s, n), pos);
   }
-  size_type find_last_not_of(const_pointer s, size_type pos = npos) const {
+  constexpr size_type find_last_not_of(const_pointer s,
+                                       size_type pos = npos) const {
     return find_last_not_of(string_view(s), pos);
   }
 
