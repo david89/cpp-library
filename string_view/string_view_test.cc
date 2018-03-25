@@ -9,9 +9,12 @@ namespace dagomez {
 namespace {
 
 using ::testing::Eq;
+using ::testing::Ge;
 using ::testing::Gt;
 using ::testing::IsNull;
+using ::testing::Le;
 using ::testing::Lt;
+using ::testing::Ne;
 using ::testing::Not;
 using ::testing::SizeIs;
 
@@ -446,24 +449,66 @@ TEST(StringView, FindLastNotOfSuccessful) {
 }
 
 TEST(StringView, EqualOpDifferentSizes) {
-  string_view a = "hello";
+  const string_view a = "hello";
+  // We exercise both the !(a == b) and the a != b paths.
   EXPECT_THAT(a, Not(Eq(string_view("hola"))));
+  EXPECT_THAT(a, Ne(string_view("hola")));
 }
 
 TEST(StringView, EqualOpSameDataDifferentSizes) {
-  string_view a = "hello";
+  const string_view a = "hello";
   EXPECT_THAT(a, Not(Eq(string_view(a.data(), a.size() - 1))));
+  EXPECT_THAT(a, Ne(string_view(a.data(), a.size() - 1)));
 }
 
 TEST(StringView, EqualOpSameSizeDifferentData) {
-  string_view a = "hello";
+  const string_view a = "hello";
   EXPECT_THAT(a, Not(Eq(string_view("hellp"))));
+  EXPECT_THAT(a, Ne(string_view("hellp")));
 }
 
 TEST(StringView, EqualOp) {
-  string_view a = "hello";
+  const string_view a = "hello";
   EXPECT_THAT(a, Eq(string_view("hello world", 5)));
   EXPECT_THAT(a, Eq(string_view("hello")));
+  EXPECT_THAT(a, Not(Ne(string_view("hello world", 5))));
+  EXPECT_THAT(a, Not(Ne(string_view("hello"))));
+}
+
+TEST(StringView, LessThan) {
+  const string_view a = "hello";
+  // We exercise both the a < b and the !(b < a) paths.
+  EXPECT_THAT(a, Lt(string_view("hellp")));
+  EXPECT_THAT(a, Lt(string_view("hello world")));
+  EXPECT_THAT(string_view("hellp"), Not(Lt(a)));
+  EXPECT_THAT(string_view("hello"), Not(Lt(a)));
+}
+
+TEST(StringView, GreaterThan) {
+  const string_view a = "hellp";
+  // We exercise both the a > b and the !(b > a) paths.
+  EXPECT_THAT(a, Gt(string_view("hello")));
+  EXPECT_THAT(a, Gt(string_view("hell")));
+  EXPECT_THAT(string_view("hello"), Not(Gt(a)));
+  EXPECT_THAT(string_view("hell"), Not(Gt(a)));
+}
+
+TEST(StringView, LessOrEqualThan) {
+  const string_view a = "hello";
+  EXPECT_THAT(a, Le(string_view("hellp")));
+  EXPECT_THAT(a, Le(string_view("hello world")));
+  EXPECT_THAT(a, Le(string_view("hello")));
+  EXPECT_THAT(string_view("hellp"), Gt(a));
+  EXPECT_THAT(string_view("hello world"), Gt(a));
+}
+
+TEST(StringView, GreaterOrEqualThan) {
+  const string_view a = "hello";
+  EXPECT_THAT(a, Ge(string_view("hell")));
+  EXPECT_THAT(a, Ge(string_view("a")));
+  EXPECT_THAT(a, Ge(string_view("hello")));
+  EXPECT_THAT(string_view("hell"), Lt(a));
+  EXPECT_THAT(string_view("a"), Lt(a));
 }
 
 }  // namespace

@@ -211,6 +211,37 @@ constexpr inline bool operator!=(string_view a, string_view b) noexcept {
   return !(a == b);
 }
 
+constexpr inline bool operator<(string_view a, string_view b) noexcept {
+  // This could could be simplified as:
+  // const int min_size = std::min(a.size(), b.size());
+  // const int comparison = compare(a.data(), b.data(), min_size);
+  // return comparison < 0 || (comparison == 0 && a.size() < b.size());
+  //
+  // However, we cannot use std::min in a constant expression yet.
+  if (a.size() < b.size()) {
+    const int comparison = string_view::traits_type::compare(a.data(), b.data(), a.size());
+    // Either comparison < 0 or comparison == 0 and a.size() < b.size(), but
+    // from the if statement, we already know that a.size() < b.size(), so we
+    // end up with comparison < 0 || comparison == 0.
+    return comparison <= 0;
+  }
+
+  const int comparison = string_view::traits_type::compare(a.data(), b.data(), b.size());
+  return comparison < 0;
+}
+
+constexpr inline bool operator>(string_view a, string_view b) noexcept {
+  return b < a;
+}
+
+constexpr inline bool operator<=(string_view a, string_view b) noexcept {
+  return !(a > b);
+}
+
+constexpr inline bool operator>=(string_view a, string_view b) noexcept {
+  return !(a < b);
+}
+
 }  // dagomez
 
 #endif  // LIBRARY_STRING_VIEW
