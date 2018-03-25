@@ -447,8 +447,23 @@ TEST(StringView, FindLastNotOfSuccessful) {
 
 TEST(StringView, EqualOpDifferentSizes) {
   string_view a = "hello";
-  string_view b = "hola";
-  EXPECT_THAT(a, Not(Eq(b)));
+  EXPECT_THAT(a, Not(Eq(string_view("hola"))));
+}
+
+TEST(StringView, EqualOpSameDataDifferentSizes) {
+  string_view a = "hello";
+  EXPECT_THAT(a, Not(Eq(string_view(a.data(), a.size() - 1))));
+}
+
+TEST(StringView, EqualOpSameSizeDifferentData) {
+  string_view a = "hello";
+  EXPECT_THAT(a, Not(Eq(string_view("hellp"))));
+}
+
+TEST(StringView, EqualOp) {
+  string_view a = "hello";
+  EXPECT_THAT(a, Eq(string_view("hello world", 5)));
+  EXPECT_THAT(a, Eq(string_view("hello")));
 }
 
 }  // namespace
