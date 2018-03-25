@@ -116,6 +116,20 @@ string_view::find_last_of(string_view s, string_view::size_type pos) const
   return npos;
 }
 
+string_view::size_type
+string_view::find_first_not_of(string_view s, string_view::size_type pos) const
+    noexcept {
+  while (pos < len_) {
+    if (traits_type::find(s.data_, s.len_, data_[pos]) == nullptr) {
+      return pos;
+    }
+
+    pos++;
+  }
+
+  return npos;
+}
+
 constexpr string_view::size_type string_view::kMaxSize;
 
 } // namespace dagomez
