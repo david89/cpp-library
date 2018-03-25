@@ -423,6 +423,28 @@ TEST(StringView, FindFirstNotOfSuccessful) {
   EXPECT_THAT(s.find_first_not_of("rnt", 2), Eq(4));
 }
 
+TEST(StringView, FindLastNotOfNotFound) {
+  const string_view s = "pattern";
+  EXPECT_THAT(s.find_last_not_of(string_view("patern")), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_not_of(string_view("pat"), 2), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_not_of('p', 0), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_not_of("paternz", 6, 6), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_not_of("pa", 1), Eq(string_view::npos));
+
+  const string_view empty;
+  EXPECT_THAT(empty.find_last_not_of(string_view("")), Eq(string_view::npos));
+}
+
+TEST(StringView, FindLastNotOfSuccessful) {
+  const string_view s = "pattern";
+  EXPECT_THAT(s.find_last_not_of(string_view("enr")), Eq(3));
+  EXPECT_THAT(s.find_last_not_of(string_view("rn"), 6), Eq(4));
+  EXPECT_THAT(s.find_last_not_of('t'), Eq(6));
+  EXPECT_THAT(s.find_last_not_of('t', 2), Eq(1));
+  EXPECT_THAT(s.find_last_not_of("rn", 6, 1), Eq(6));
+  EXPECT_THAT(s.find_last_not_of("rnt", 2), Eq(1));
+}
+
 TEST(StringView, EqualOpDifferentSizes) {
   string_view a = "hello";
   string_view b = "hola";
