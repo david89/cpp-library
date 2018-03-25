@@ -356,6 +356,49 @@ TEST(StringView, RfindSuccessful) {
   EXPECT_THAT(s.rfind("end is near", s.size() - 2, 3), Eq(s.size() - 3));
 }
 
+TEST(StringView, FindFirstOfNotFound) {
+  const string_view s = "pattern";
+  EXPECT_THAT(s.find_first_of(string_view("xyz")), Eq(string_view::npos));
+  EXPECT_THAT(s.find_first_of(string_view("n"), 7), Eq(string_view::npos));
+  EXPECT_THAT(s.find_first_of('z'), Eq(string_view::npos));
+  EXPECT_THAT(s.find_first_of('n', 7), Eq(string_view::npos));
+  EXPECT_THAT(s.find_first_of("aer", 6, 3), Eq(string_view::npos));
+  EXPECT_THAT(s.find_first_of("aer", 6), Eq(string_view::npos));
+}
+
+TEST(StringView, FindFirstOfSuccessful) {
+  const string_view s = "pattern";
+  EXPECT_THAT(s.find_first_of(string_view("ate")), Eq(1));
+  EXPECT_THAT(s.find_first_of(string_view("e"), 2), Eq(4));
+  EXPECT_THAT(s.find_first_of('a'), Eq(1));
+  EXPECT_THAT(s.find_first_of('n', 2), Eq(6));
+  EXPECT_THAT(s.find_first_of("rnt", 2, 2), Eq(5));
+  EXPECT_THAT(s.find_first_of("rnt", 2), Eq(2));
+}
+
+TEST(StringView, FindLastOfNotFound) {
+  const string_view s = "pattern";
+  EXPECT_THAT(s.find_last_of(string_view("xyz")), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_of(string_view("n"), 5), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_of('z'), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_of('n', 5), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_of("tea", 1, 2), Eq(string_view::npos));
+  EXPECT_THAT(s.find_last_of("te", 1), Eq(string_view::npos));
+
+  const string_view empty;
+  EXPECT_THAT(empty.find_last_of(string_view("")), Eq(string_view::npos));
+}
+
+TEST(StringView, FindLastOfSuccessful) {
+  const string_view s = "pattern";
+  EXPECT_THAT(s.find_last_of(string_view("ate")), Eq(4));
+  EXPECT_THAT(s.find_last_of(string_view("p"), 2), Eq(0));
+  EXPECT_THAT(s.find_last_of('t'), Eq(3));
+  EXPECT_THAT(s.find_last_of('t', 2), Eq(2));
+  EXPECT_THAT(s.find_last_of("pa", 1, 1), Eq(0));
+  EXPECT_THAT(s.find_last_of("rnt", 2), Eq(2));
+}
+
 TEST(StringView, EqualOpDifferentSizes) {
   string_view a = "hello";
   string_view b = "hola";
