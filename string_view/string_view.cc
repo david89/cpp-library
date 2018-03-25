@@ -30,18 +30,6 @@ string_view::substr(string_view::size_type pos,
   return string_view();
 }
 
-int string_view::compare(string_view s) const noexcept {
-  const size_type rlen = std::min(len_, s.len_);
-  const int comparison = traits_type::compare(data_, s.data_, rlen);
-  if (comparison != 0) {
-    return comparison;
-  }
-  if (len_ != s.len_) {
-    return len_ < s.len_ ? -1 : 1;
-  }
-  return 0;
-}
-
 string_view::size_type
 string_view::find(string_view s, string_view::size_type pos) const noexcept {
   if (empty() && s.empty() && pos == 0) {

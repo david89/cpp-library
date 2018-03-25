@@ -100,9 +100,21 @@ public:
   // smaller of count and size() - pos.
   string_view substr(size_type pos = 0, size_type count = npos) const;
   // Compares two character sequences.
-  // TODO(dagomez): it cannot be marked as constexpr due to memcmp not being
-  // constexpr.
-  int compare(string_view s) const noexcept;
+  constexpr int compare(string_view s) const noexcept {
+    if (len_ < s.len_) {
+      const int comparison = traits_type::compare(data_, s.data_, len_);
+      if (comparison != 0) {
+        return comparison;
+      }
+      return -1;
+    }
+
+    const int comparison = traits_type::compare(data_, s.data_, s.len_);
+    if (comparison != 0) {
+      return comparison;
+    }
+    return len_ == s.len_ ? 0 : 1;
+  }
   // Compare substring(pos1, count1) with s.
   constexpr int compare(size_type pos1, size_type count1, string_view s) const {
     return substr(pos1, count1).compare(s);
@@ -199,47 +211,27 @@ private:
 };
 
 constexpr inline bool operator==(string_view a, string_view b) noexcept {
-  if (a.size() != b.size()) return false;
-  if (a.size() <= 0) return true;
-  // If they point to the same underlying data and have the same length, then
-  // they are the same. Avoid doing a byte by byte comparison.
-  if (a.data() == b.data()) return a.size() == b.size();
-  return string_view::traits_type::compare(a.data(), b.data(), a.size()) == 0;
+  return a.compare(b) == 0;
 }
 
 constexpr inline bool operator!=(string_view a, string_view b) noexcept {
-  return !(a == b);
+  return a.compare(b) != 0;
 }
 
 constexpr inline bool operator<(string_view a, string_view b) noexcept {
-  // This could could be simplified as:
-  // const int min_size = std::min(a.size(), b.size());
-  // const int comparison = compare(a.data(), b.data(), min_size);
-  // return comparison < 0 || (comparison == 0 && a.size() < b.size());
-  //
-  // However, we cannot use std::min in a constant expression yet.
-  if (a.size() < b.size()) {
-    const int comparison = string_view::traits_type::compare(a.data(), b.data(), a.size());
-    // Either comparison < 0 or comparison == 0 and a.size() < b.size(), but
-    // from the if statement, we already know that a.size() < b.size(), so we
-    // end up with comparison < 0 || comparison == 0.
-    return comparison <= 0;
-  }
-
-  const int comparison = string_view::traits_type::compare(a.data(), b.data(), b.size());
-  return comparison < 0;
+  return a.compare(b) < 0;
 }
 
 constexpr inline bool operator>(string_view a, string_view b) noexcept {
-  return b < a;
+  return a.compare(b) > 0;
 }
 
 constexpr inline bool operator<=(string_view a, string_view b) noexcept {
-  return !(a > b);
+  return a.compare(b) <= 0;
 }
 
 constexpr inline bool operator>=(string_view a, string_view b) noexcept {
-  return !(a < b);
+  return a.compare(b) >= 0;
 }
 
 }  // dagomez
