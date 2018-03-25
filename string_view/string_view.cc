@@ -47,7 +47,7 @@ string_view::find(string_view s, string_view::size_type pos) const noexcept {
   if (empty() && s.empty() && pos == 0) {
     return 0;
   }
-  if (pos >= len_ || s.len_ > (len_ - pos)) {
+  if (pos > len_ || s.len_ > (len_ - pos)) {
     return npos;
   }
   // We cannot just use strstr, because we may have non-null terminated strings,
@@ -65,6 +65,21 @@ string_view::find(string_view s, string_view::size_type pos) const noexcept {
 
 string_view::size_type
 string_view::rfind(string_view s, string_view::size_type pos) const noexcept {
+  if (s.empty()) {
+    return std::min(pos, len_);
+  }
+  if (s.len_ > len_) {
+    return npos;
+  }
+  pos = std::min(pos, len_ - s.len_);
+  while (pos != npos) {
+    if (memcmp(data_ + pos, s.data_, s.len_) == 0) {
+      return pos;
+    }
+
+    pos--;
+  }
+
   return npos;
 }
 

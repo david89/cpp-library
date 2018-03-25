@@ -307,6 +307,10 @@ TEST(StringView, FindWithEmptyStrings) {
   EXPECT_THAT(empty.find('a', 1), Eq(string_view::npos));
   EXPECT_THAT(empty.find(""), Eq(0));
   EXPECT_THAT(empty.find("", 1), Eq(string_view::npos));
+
+  const string_view s = "pattern";
+  EXPECT_THAT(s.find(""), Eq(0));
+  EXPECT_THAT(s.find("", 1), Eq(1));
 }
 
 TEST(StringView, FindSuccessful) {
@@ -317,6 +321,39 @@ TEST(StringView, FindSuccessful) {
   EXPECT_THAT(s.find("pattern", 1), Eq(13));
   EXPECT_THAT(s.find("end", 1, 3), Eq(s.size() - 3));
   EXPECT_THAT(s.find("end is near", 1, 3), Eq(s.size() - 3));
+  EXPECT_THAT(s.find("", s.size()), Eq(s.size()));
+}
+
+TEST(StringView, RfindNotFound) {
+  const string_view s = "pattern here";
+  EXPECT_THAT(s.rfind(string_view("pattern herE")), Eq(string_view::npos));
+  EXPECT_THAT(s.rfind('q'), Eq(string_view::npos));
+  EXPECT_THAT(s.rfind('a', 0), Eq(string_view::npos));
+  EXPECT_THAT(s.rfind("patterN"), Eq(string_view::npos));
+  EXPECT_THAT(s.rfind("Attern", 1), Eq(string_view::npos));
+  EXPECT_THAT(s.rfind("ttern", 1, 5), Eq(string_view::npos));
+}
+
+TEST(StringView, RfindWithEmptyStrings) {
+  const string_view empty;
+  EXPECT_THAT(empty.rfind('a'), Eq(string_view::npos));
+  EXPECT_THAT(empty.rfind('a', 1), Eq(string_view::npos));
+  EXPECT_THAT(empty.rfind(""), Eq(0));
+  EXPECT_THAT(empty.rfind("", 1), Eq(0));
+
+  const string_view s = "pattern";
+  EXPECT_THAT(s.rfind(""), Eq(s.size()));
+  EXPECT_THAT(s.rfind("", s.size() - 2), Eq(s.size() - 2));
+}
+
+TEST(StringView, RfindSuccessful) {
+  const string_view s = "pattern here pattern there, the end";
+  EXPECT_THAT(s.rfind(string_view("pattern")), Eq(13));
+  EXPECT_THAT(s.rfind('a'), Eq(14));
+  EXPECT_THAT(s.rfind('a', 2), Eq(1));
+  EXPECT_THAT(s.rfind("pattern", 12), Eq(0));
+  EXPECT_THAT(s.rfind("end", s.size() - 2, 3), Eq(s.size() - 3));
+  EXPECT_THAT(s.rfind("end is near", s.size() - 2, 3), Eq(s.size() - 3));
 }
 
 TEST(StringView, EqualOpDifferentSizes) {

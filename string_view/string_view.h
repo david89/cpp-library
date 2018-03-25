@@ -134,6 +134,15 @@ public:
     return find(string_view(s), pos);
   }
   size_type rfind(string_view s, size_type pos = npos) const noexcept;
+  size_type rfind(value_type c, size_type pos = npos) const noexcept {
+    return rfind(string_view(&c, 1), pos);
+  }
+  constexpr size_type rfind(const_pointer s, size_type pos, size_type n) const {
+    return rfind(string_view(s, n), pos);
+  }
+  constexpr size_type rfind(const_pointer s, size_type pos = npos) const {
+    return rfind(string_view(s), pos);
+  }
 
 private:
   constexpr static size_type internal_strlen(const_pointer str) {
