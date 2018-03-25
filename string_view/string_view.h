@@ -101,6 +101,7 @@ public:
   string_view substr(size_type pos = 0, size_type count = npos) const;
   // Compares two character sequences.
   constexpr int compare(string_view s) const noexcept {
+    // TODO(dagomez): try to incorporate constexpr std::min here.
     if (len_ < s.len_) {
       const int comparison = traits_type::compare(data_, s.data_, len_);
       if (comparison != 0) {
