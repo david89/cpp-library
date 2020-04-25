@@ -29,7 +29,7 @@ public:
   using reverse_iterator = const_reverse_iterator;
   using size_type = size_t;
   using difference_type = ptrdiff_t;
-  static constexpr size_type npos = static_cast<size_type>(-1);
+  static constexpr size_type npos = size_type(-1);
 
   // Construction and assignment.
   constexpr string_view() noexcept : data_(nullptr), len_(0) {}
