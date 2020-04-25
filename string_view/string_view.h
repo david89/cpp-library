@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <cstring>
 
 #include <algorithm>
 #include <iterator>
@@ -38,7 +39,7 @@ public:
       : data_(str), len_(internal_strlen(str)) {}
   constexpr string_view(const_pointer str, size_type len)
       : data_(str), len_(len) {}
-  constexpr string_view(const std::string& str)
+  string_view(const std::string& str)
       : data_(str.data()), len_(str.size()) {}
 
   // Destruction.
@@ -100,7 +101,7 @@ public:
   // smaller of count and size() - pos.
   string_view substr(size_type pos = 0, size_type count = npos) const;
   // Compares two character sequences.
-  constexpr int compare(string_view s) const noexcept {
+  int compare(string_view s) const noexcept {
     // TODO(dagomez): try to incorporate constexpr std::min here.
     if (len_ < s.len_) {
       const int comparison = traits_type::compare(data_, s.data_, len_);
@@ -111,95 +112,94 @@ public:
     return comparison != 0 ? comparison : (len_ == s.len_ ? 0 : 1);
   }
   // Compare substring(pos1, count1) with s.
-  constexpr int compare(size_type pos1, size_type count1, string_view s) const {
+  int compare(size_type pos1, size_type count1, string_view s) const {
     return substr(pos1, count1).compare(s);
   }
   // Compare substring(pos1, count1) with s.substring(pos2, count2).
-  constexpr int compare(size_type pos1, size_type count1, string_view s,
+  int compare(size_type pos1, size_type count1, string_view s,
                         size_type pos2, size_type count2) const {
     return substr(pos1, count1).compare(s.substr(pos2, count2));
   }
-  constexpr int compare(const_pointer s) const {
+  int compare(const_pointer s) const {
     return compare(string_view(s));
   }
-  constexpr int compare(size_type pos1, size_type count1,
+  int compare(size_type pos1, size_type count1,
                         const_pointer s) const {
     return substr(pos1, count1).compare(string_view(s));
   }
-  constexpr int compare(size_type pos1, size_type count1, const_pointer s,
+  int compare(size_type pos1, size_type count1, const_pointer s,
                         size_type count2) const {
     return substr(pos1, count1).compare(string_view(s, count2));
   }
   size_type find(string_view s, size_type pos = 0) const noexcept;
-  constexpr size_type find(value_type c, size_type pos = 0) const noexcept {
+  size_type find(value_type c, size_type pos = 0) const noexcept {
     return find(string_view(&c, 1), pos);
   }
-  constexpr size_type find(const_pointer s, size_type pos, size_type n) const {
+  size_type find(const_pointer s, size_type pos, size_type n) const {
     return find(string_view(s, n), pos);
   }
-  constexpr size_type find(const_pointer s, size_type pos = 0) const {
+  size_type find(const_pointer s, size_type pos = 0) const {
     return find(string_view(s), pos);
   }
   size_type rfind(string_view s, size_type pos = npos) const noexcept;
-  constexpr size_type rfind(value_type c, size_type pos = npos) const noexcept {
+  size_type rfind(value_type c, size_type pos = npos) const noexcept {
     return rfind(string_view(&c, 1), pos);
   }
-  constexpr size_type rfind(const_pointer s, size_type pos, size_type n) const {
+  size_type rfind(const_pointer s, size_type pos, size_type n) const {
     return rfind(string_view(s, n), pos);
   }
-  constexpr size_type rfind(const_pointer s, size_type pos = npos) const {
+  size_type rfind(const_pointer s, size_type pos = npos) const {
     return rfind(string_view(s), pos);
   }
   size_type find_first_of(string_view s, size_type pos = 0) const noexcept;
-  constexpr size_type find_first_of(value_type c, size_type pos = 0) const
+  size_type find_first_of(value_type c, size_type pos = 0) const
       noexcept {
     return find_first_of(string_view(&c, 1), pos);
   }
-  constexpr size_type find_first_of(const_pointer s, size_type pos,
+  size_type find_first_of(const_pointer s, size_type pos,
                                     size_type n) const {
     return find_first_of(string_view(s, n), pos);
   }
-  constexpr size_type find_first_of(const_pointer s, size_type pos = 0) const {
+  size_type find_first_of(const_pointer s, size_type pos = 0) const {
     return find_first_of(string_view(s), pos);
   }
   size_type find_last_of(string_view s, size_type pos = npos) const noexcept;
-  constexpr size_type find_last_of(value_type c, size_type pos = npos) const
+  size_type find_last_of(value_type c, size_type pos = npos) const
       noexcept {
     return find_last_of(string_view(&c, 1), pos);
   }
-  constexpr size_type find_last_of(const_pointer s, size_type pos,
+  size_type find_last_of(const_pointer s, size_type pos,
                                    size_type n) const {
     return find_last_of(string_view(s, n), pos);
   }
-  constexpr size_type find_last_of(const_pointer s,
+  size_type find_last_of(const_pointer s,
                                    size_type pos = npos) const {
     return find_last_of(string_view(s), pos);
   }
   size_type find_first_not_of(string_view s, size_type pos = 0) const noexcept;
-  constexpr size_type find_first_not_of(value_type c, size_type pos = 0) const
+  size_type find_first_not_of(value_type c, size_type pos = 0) const
       noexcept {
     return find_first_not_of(string_view(&c, 1), pos);
   }
-  constexpr size_type find_first_not_of(const_pointer s, size_type pos,
+  size_type find_first_not_of(const_pointer s, size_type pos,
                                         size_type n) const {
     return find_first_not_of(string_view(s, n), pos);
   }
-  constexpr size_type find_first_not_of(const_pointer s,
+  size_type find_first_not_of(const_pointer s,
                                         size_type pos = 0) const {
     return find_first_not_of(string_view(s), pos);
   }
-  size_type find_last_not_of(string_view s, size_type pos = npos) const
-      noexcept;
-  constexpr size_type find_last_not_of(value_type c, size_type pos = npos) const
-      noexcept {
+  size_type find_last_not_of(string_view s,
+                             size_type pos = npos) const noexcept;
+  size_type find_last_not_of(value_type c,
+                             size_type pos = npos) const noexcept {
     return find_last_not_of(string_view(&c, 1), pos);
   }
-  constexpr size_type find_last_not_of(const_pointer s, size_type pos,
-                                       size_type n) const {
+  size_type find_last_not_of(const_pointer s, size_type pos,
+                             size_type n) const {
     return find_last_not_of(string_view(s, n), pos);
   }
-  constexpr size_type find_last_not_of(const_pointer s,
-                                       size_type pos = npos) const {
+  size_type find_last_not_of(const_pointer s, size_type pos = npos) const {
     return find_last_not_of(string_view(s), pos);
   }
 
@@ -213,27 +213,27 @@ private:
   size_type len_;
 };
 
-constexpr inline bool operator==(string_view a, string_view b) noexcept {
+inline bool operator==(string_view a, string_view b) noexcept {
   return a.compare(b) == 0;
 }
 
-constexpr inline bool operator!=(string_view a, string_view b) noexcept {
+inline bool operator!=(string_view a, string_view b) noexcept {
   return a.compare(b) != 0;
 }
 
-constexpr inline bool operator<(string_view a, string_view b) noexcept {
+inline bool operator<(string_view a, string_view b) noexcept {
   return a.compare(b) < 0;
 }
 
-constexpr inline bool operator>(string_view a, string_view b) noexcept {
+inline bool operator>(string_view a, string_view b) noexcept {
   return a.compare(b) > 0;
 }
 
-constexpr inline bool operator<=(string_view a, string_view b) noexcept {
+inline bool operator<=(string_view a, string_view b) noexcept {
   return a.compare(b) <= 0;
 }
 
-constexpr inline bool operator>=(string_view a, string_view b) noexcept {
+inline bool operator>=(string_view a, string_view b) noexcept {
   return a.compare(b) >= 0;
 }
 
