@@ -18,9 +18,7 @@ string_view::size_type string_view::copy(string_view::pointer dest,
   }
 
   const size_type rcount = std::min(count, len_ - pos);
-  if (rcount > 0) {
-    std::copy(data_ + pos, data_ + pos + rcount, dest);
-  }
+  traits_type::copy(dest, data_ + pos, rcount);
   return rcount;
 }
 
