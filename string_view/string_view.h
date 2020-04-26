@@ -89,12 +89,10 @@ public:
 
   // Modifiers.
   void remove_prefix(size_type n) {
-    assert(n <= len_);
     data_ = data_ + n;
     len_ -= n;
   }
   void remove_suffix(size_type n) {
-    assert(n <= len_);
     len_ -= n;
   }
   void swap(string_view& s) noexcept {
