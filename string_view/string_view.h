@@ -14,6 +14,10 @@
 
 namespace dagomez {
 
+// NOTE: using https://en.cppreference.com/w/cpp/string/basic_string_view as a
+// guide.
+// TODO: Define this as basic_string_view, and let string_view =
+// basic_string_view<char>
 class string_view {
 public:
   // Types.
@@ -31,10 +35,9 @@ public:
   using difference_type = ptrdiff_t;
   static constexpr size_type npos = size_type(-1);
 
-  // Construction and assignment.
+  // Construction.
   constexpr string_view() noexcept : data_(nullptr), len_(0) {}
   constexpr string_view(const string_view&) noexcept = default;
-  string_view& operator=(const string_view&) noexcept = default;
   constexpr string_view(const_pointer str)
       : data_(str), len_(internal_strlen(str)) {}
   constexpr string_view(const_pointer str, size_type len)
@@ -42,22 +45,33 @@ public:
   string_view(const std::string& str)
       : data_(str.data()), len_(str.size()) {}
 
-  // Destruction.
-  ~string_view() = default;
+  // Assignment.
+  string_view& operator=(const string_view&) noexcept = default;
 
   // Iterator support.
   constexpr const_iterator begin() const noexcept { return data_; }
-  constexpr const_iterator end() const noexcept { return data_ + len_; }
   constexpr const_iterator cbegin() const noexcept { return begin(); }
+  constexpr const_iterator end() const noexcept { return data_ + len_; }
   constexpr const_iterator cend() const noexcept { return end(); }
+  // TODO: these cannot be marked as constexpr because std::reverse_iterator is
+  // not constexpr.
   const_reverse_iterator rbegin() const noexcept {
     return const_reverse_iterator(end());
   }
+  const_reverse_iterator crbegin() const noexcept { return rbegin(); }
   const_reverse_iterator rend() const noexcept {
     return const_reverse_iterator(begin());
   }
-  const_reverse_iterator crbegin() const noexcept { return rbegin(); }
   const_reverse_iterator crend() const noexcept { return rend(); }
+
+  // Element access.
+  constexpr const_reference operator[](size_type pos) const {
+    return data_[pos];
+  }
+  const_reference at(size_type pos) const;
+  constexpr const_reference front() const { return data_[0]; }
+  constexpr const_reference back() const { return data_[len_ - 1]; }
+  constexpr const_pointer data() const noexcept { return data_; }
 
   // Capacity.
   constexpr size_type size() const noexcept {
@@ -70,13 +84,6 @@ public:
   constexpr bool empty() const noexcept {
     return len_ == 0;
   }
-
-  // Element access
-  constexpr const_reference operator[](size_type pos) const { return at(pos); }
-  constexpr const_reference at(size_type pos) const { return data_[pos]; }
-  constexpr const_reference front() const { return at(0); }
-  constexpr const_reference back() const { return at(len_ - 1); }
-  constexpr const_pointer data() const noexcept { return data_; }
 
   // Modifiers.
   void remove_prefix(size_type n) {

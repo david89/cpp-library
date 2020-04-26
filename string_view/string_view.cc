@@ -2,6 +2,14 @@
 
 namespace dagomez {
 
+string_view::const_reference string_view::at(size_type pos) const {
+  if (pos > len_) {
+    throw std::out_of_range("Out of range");
+  }
+
+  return this->operator[](pos);
+}
+
 string_view::size_type string_view::copy(string_view::pointer dest,
                                          string_view::size_type count,
                                          string_view::size_type pos) const {

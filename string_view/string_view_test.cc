@@ -1,5 +1,6 @@
 #include "string_view.h"
 
+#include <exception>
 #include <string>
 
 #include "gmock/gmock.h"
@@ -11,6 +12,7 @@ namespace {
 using ::testing::Eq;
 using ::testing::Ge;
 using ::testing::Gt;
+using ::testing::HasSubstr;
 using ::testing::IsNull;
 using ::testing::Le;
 using ::testing::Lt;
@@ -97,6 +99,18 @@ TEST(StringView, AccessRelatedChecks) {
   EXPECT_THAT(s.at(s.size() - 1), Eq('!'));
   EXPECT_THAT(s.front(), Eq('h'));
   EXPECT_THAT(s.back(), Eq('!'));
+}
+
+TEST(StringView, AtFailsWhenOutOfRange) {
+  const string_view s = "hello";
+  try {
+    s.at(100);
+    FAIL() << "Expected assertion before";
+  } catch(const std::out_of_range& e) {
+    EXPECT_THAT(e.what(), HasSubstr("range"));
+  } catch(...) {
+    FAIL() << "Expected out_of_range exception";
+  }
 }
 
 TEST(StringView, RemovePrefix) {
