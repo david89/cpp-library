@@ -113,6 +113,11 @@ TEST(StringView, AtFailsWhenOutOfRange) {
   }
 }
 
+TEST(StringView, MaxSize) {
+  const string_view s = "hello";
+  EXPECT_THAT(s.max_size(), Gt(0));
+}
+
 TEST(StringView, RemovePrefix) {
   const char data[] = "hello world!";
   constexpr string_view::size_type offset = 6;  /* size of "hello " */

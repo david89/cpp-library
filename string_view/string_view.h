@@ -80,7 +80,9 @@ public:
   constexpr size_type length() const noexcept {
     return size();
   }
-  constexpr size_type max_size() const noexcept;
+  constexpr size_type max_size() const noexcept {
+    return kMaxSize;
+  }
   constexpr bool empty() const noexcept {
     return len_ == 0;
   }
