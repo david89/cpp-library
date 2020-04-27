@@ -133,6 +133,9 @@ public:
   bool starts_with(string_view s) const noexcept;
   bool starts_with(value_type c) const noexcept;
   bool starts_with(const_pointer s) const;
+  bool ends_with(string_view s) const noexcept;
+  bool ends_with(value_type c) const noexcept;
+  bool ends_with(const_pointer s) const;
   size_type find(string_view s, size_type pos = 0) const noexcept;
   size_type find(value_type c, size_type pos = 0) const noexcept {
     return find(string_view(&c, 1), pos);

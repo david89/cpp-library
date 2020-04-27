@@ -304,6 +304,18 @@ TEST(StringView, StartsWith) {
   EXPECT_FALSE(s.starts_with(string_view("not")));
   EXPECT_FALSE(s.starts_with('t'));
   EXPECT_FALSE(s.starts_with("not"));
+  EXPECT_FALSE(s.starts_with("some text that is too large"));
+}
+
+TEST(StringView, EndsWith) {
+  const string_view s = "some text";
+  EXPECT_TRUE(s.ends_with(string_view("text")));
+  EXPECT_TRUE(s.ends_with('t'));
+  EXPECT_TRUE(s.ends_with("text"));
+  EXPECT_FALSE(s.ends_with(string_view("not")));
+  EXPECT_FALSE(s.ends_with('s'));
+  EXPECT_FALSE(s.ends_with("not"));
+  EXPECT_FALSE(s.ends_with("too large some text"));
 }
 
 TEST(StringView, FindPosTooLarge) {
