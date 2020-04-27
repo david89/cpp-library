@@ -1,5 +1,7 @@
 #include "string_view.h"
 
+#include <ios>
+
 namespace dagomez {
 
 string_view::const_reference string_view::at(size_type pos) const {
@@ -178,7 +180,29 @@ string_view::find_last_not_of(string_view s, string_view::size_type pos) const
 constexpr string_view::size_type string_view::kMaxSize;
 
 std::ostream& operator<<(std::ostream& os, string_view s) {
+  std::ostream::sentry sentry{os};
+  if (!sentry) return os;
+
+  // Ideas from:
+  // https://stackoverflow.com/questions/39653508/implementation-of-string-view-formatted-stream-ouput
+
+  std::string padding;
+  if (s.size() < os.width()) {
+    // TODO(dagomez): This is not efficient, but let's get this working first.
+    padding = std::string(os.width() - s.size(), os.fill());
+  }
+
+  bool align_left = os.flags() & std::ios_base::left;
+  //github.com/andrewseidl/githook-clang-formatool align_left = os.flags() & std::ios_base::left;
+  if (!padding.empty() && !align_left) {
+    os.write(padding.data(), padding.size());
+  }
   os.write(s.data(), s.size());
+  if (!padding.empty() && align_left) {
+    os.write(padding.data(), padding.size());
+  }
+
+  os.width(0);
   return os;
 }
 

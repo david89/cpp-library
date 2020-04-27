@@ -557,7 +557,27 @@ TEST(StringView, StringOutput) {
   const string_view a = "hello world";
   std::ostringstream oss;
   oss << a;
-  EXPECT_EQ(oss.str(), std::string(a.data(), a.size()));
+  EXPECT_EQ(oss.str(), "hello world");
+
+  oss.str("");
+  oss << std::setw(20) << std::left << a;
+  EXPECT_EQ(oss.str(), "hello world         ");
+
+  oss.str("");
+  oss << std::setw(20) << std::right << a;
+  EXPECT_EQ(oss.str(), "         hello world");
+
+  oss.str("");
+  oss << std::setw(20) << std::setfill('*') << std::left << a;
+  EXPECT_EQ(oss.str(), "hello world*********");
+
+  oss.str("");
+  oss << std::setw(20) << std::setfill('*') << std::right << a;
+  EXPECT_EQ(oss.str(), "*********hello world");
+
+  oss.str("");
+  oss << std::setw(20) << std::setfill('*') << std::right << a << a;
+  EXPECT_EQ(oss.str(), "*********hello worldhello world");
 }
 
 }  // namespace
