@@ -32,6 +32,10 @@ TEST(StringView, DefaultConstructor) {
   const string_view s;
   EXPECT_THAT(s.data(), IsNull());
   EXPECT_THAT(s, IsEmpty());
+
+  const string_view t(nullptr);
+  EXPECT_THAT(s.data(), IsNull());
+  EXPECT_THAT(s, IsEmpty());
 }
 
 TEST(StringView, DataConstructor) {
