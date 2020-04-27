@@ -579,5 +579,10 @@ TEST(StringView, StringOutput) {
   EXPECT_EQ(oss.str(), "*********hello worldhello world");
 }
 
+TEST(StringView, Hash) {
+  EXPECT_EQ(std::hash<string_view>{}("hello world"),
+            std::hash<std::string>{}("hello world"));
+}
+
 }  // namespace
 }  // namespace dagomez

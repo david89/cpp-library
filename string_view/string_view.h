@@ -224,4 +224,15 @@ std::ostream& operator<<(std::ostream& os, string_view s);
 
 }  // namespace dagomez
 
+namespace std {
+template <>
+struct hash<dagomez::string_view> {
+  size_t operator()(dagomez::string_view s) const {
+    // Extracted from
+    // https://stackoverflow.com/questions/19411742/what-is-the-default-hash-function-used-in-c-stdunordered-map
+    return std::_Hash_impl::hash(s.data(), s.length());
+  }
+};
+}  // namespace std
+
 #endif  // LIBRARY_STRING_VIEW
