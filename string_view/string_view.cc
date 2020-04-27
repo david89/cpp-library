@@ -177,4 +177,9 @@ string_view::find_last_not_of(string_view s, string_view::size_type pos) const
 
 constexpr string_view::size_type string_view::kMaxSize;
 
+std::ostream& operator<<(std::ostream& os, string_view s) {
+  os.write(s.data(), s.size());
+  return os;
+}
+
 } // namespace dagomez

@@ -1,6 +1,7 @@
 #include "string_view.h"
 
 #include <exception>
+#include <sstream>
 #include <string>
 
 #include "gmock/gmock.h"
@@ -550,6 +551,13 @@ TEST(StringView, GreaterOrEqualThan) {
   EXPECT_THAT(a, Ge(string_view("hello")));
   EXPECT_THAT(string_view("hell"), Lt(a));
   EXPECT_THAT(string_view("a"), Lt(a));
+}
+
+TEST(StringView, StringOutput) {
+  const string_view a = "hello world";
+  std::ostringstream oss;
+  oss << a;
+  EXPECT_EQ(oss.str(), std::string(a.data(), a.size()));
 }
 
 }  // namespace

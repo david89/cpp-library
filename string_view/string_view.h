@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <ostream>
 #include <stdexcept>
 #include <string>
 
@@ -241,6 +242,8 @@ inline bool operator<=(string_view a, string_view b) noexcept {
 inline bool operator>=(string_view a, string_view b) noexcept {
   return a.compare(b) >= 0;
 }
+
+std::ostream& operator<<(std::ostream& os, string_view s);
 
 }  // dagomez
 
