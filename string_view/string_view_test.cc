@@ -14,6 +14,7 @@ using ::testing::Eq;
 using ::testing::Ge;
 using ::testing::Gt;
 using ::testing::HasSubstr;
+using ::testing::IsEmpty;
 using ::testing::IsNull;
 using ::testing::Le;
 using ::testing::Lt;
@@ -30,75 +31,75 @@ std::string join_strs_by_null(std::string a, std::string b) {
 TEST(StringView, DefaultConstructor) {
   const string_view s;
   EXPECT_THAT(s.data(), IsNull());
-  EXPECT_THAT(s.size(), Eq(0));
+  EXPECT_THAT(s, IsEmpty());
 }
 
 TEST(StringView, DataConstructor) {
   const char data[] = "hello";
   const string_view s(data);
-  EXPECT_THAT(s.data(), Eq(data));
-  EXPECT_THAT(s.size(), Eq(5));
+  EXPECT_EQ(s.data(), data);
+  EXPECT_THAT(s, SizeIs(5));
 }
 
 TEST(StringView, DataAndLengthConstructor) {
   const char data[] = "hello";
   const string_view s(data, 3);
-  EXPECT_THAT(s.data(), Eq(data));
-  EXPECT_THAT(s.size(), Eq(3));
+  EXPECT_EQ(s.data(), data);
+  EXPECT_THAT(s, SizeIs(3));
 }
 
 TEST(StringView, StringConstructor) {
   const std::string data = join_strs_by_null("hello", "world");
   const string_view s(data);
-  EXPECT_THAT(s.data(), Eq(data.data()));
-  EXPECT_THAT(s.size(), Eq(11));
+  EXPECT_EQ(s.data(), data.data());
+  EXPECT_THAT(s, SizeIs(11));
 }
 
 TEST(StringView, AssignmentConstructor) {
   const char data[] = "hello";
   const string_view s = data;
-  EXPECT_THAT(s.data(), Eq(data));
-  EXPECT_THAT(s.size(), Eq(5));
+  EXPECT_EQ(s.data(), data);
+  EXPECT_THAT(s, SizeIs(5));
 }
 
 TEST(StringView, ReferenceConstructor) {
   const string_view t = "hello";
   const string_view s(t);
-  EXPECT_THAT(s.data(), Eq(t.data()));
-  EXPECT_THAT(s.size(), Eq(t.size()));
+  EXPECT_EQ(s.data(), t.data());
+  EXPECT_THAT(s, SizeIs(t.size()));
 }
 
 TEST(StringView, Iterators) {
   const string_view s = "hello";
-  EXPECT_THAT(*s.begin(), Eq('h'));
-  EXPECT_THAT(*(s.end() - 1), Eq('o'));
-  EXPECT_THAT(*s.cbegin(), Eq('h'));
-  EXPECT_THAT(*(s.cend() - 1), Eq('o'));
-  EXPECT_THAT(*s.rbegin(), Eq('o'));
-  EXPECT_THAT(*(s.rend() - 1), Eq('h'));
-  EXPECT_THAT(*s.crbegin(), Eq('o'));
-  EXPECT_THAT(*(s.crend() - 1), Eq('h'));
+  EXPECT_EQ(*s.begin(), 'h');
+  EXPECT_EQ(*(s.end() - 1), 'o');
+  EXPECT_EQ(*s.cbegin(), 'h');
+  EXPECT_EQ(*(s.cend() - 1), 'o');
+  EXPECT_EQ(*s.rbegin(), 'o');
+  EXPECT_EQ(*(s.rend() - 1), 'h');
+  EXPECT_EQ(*s.crbegin(), 'o');
+  EXPECT_EQ(*(s.crend() - 1), 'h');
 }
 
 TEST(StringView, SizeRelatedChecks) {
   string_view s = "hello";
   EXPECT_THAT(s, SizeIs(5));
-  EXPECT_THAT(s.size(), Eq(s.length()));
+  EXPECT_THAT(s, SizeIs(s.length()));
   EXPECT_FALSE(s.empty());
   s = "";
-  EXPECT_THAT(s, SizeIs(0));
-  EXPECT_THAT(s.size(), Eq(s.length()));
+  EXPECT_THAT(s, IsEmpty());
+  EXPECT_THAT(s, SizeIs(s.length()));
   EXPECT_TRUE(s.empty());
 }
 
 TEST(StringView, AccessRelatedChecks) {
   const string_view s = "hello world!";
-  EXPECT_THAT(s[0], Eq('h'));
-  EXPECT_THAT(s.at(0), Eq('h'));
-  EXPECT_THAT(s[s.size() - 1], Eq('!'));
-  EXPECT_THAT(s.at(s.size() - 1), Eq('!'));
-  EXPECT_THAT(s.front(), Eq('h'));
-  EXPECT_THAT(s.back(), Eq('!'));
+  EXPECT_EQ(s[0], 'h');
+  EXPECT_EQ(s.at(0), 'h');
+  EXPECT_EQ(s[s.size() - 1], '!');
+  EXPECT_EQ(s.at(s.size() - 1), '!');
+  EXPECT_EQ(s.front(), 'h');
+  EXPECT_EQ(s.back(), '!');
 }
 
 TEST(StringView, AtFailsWhenOutOfRange) {
@@ -125,10 +126,10 @@ TEST(StringView, RemovePrefix) {
   string_view s = data;
   s.remove_prefix(offset);
   EXPECT_THAT(s, SizeIs(remaining_offset));
-  EXPECT_THAT(s.data(), Eq(data + offset));
+  EXPECT_EQ(s.data(), data + offset);
   s.remove_prefix(remaining_offset);
-  EXPECT_THAT(s, SizeIs(0));
-  EXPECT_THAT(s.data(), Eq(data + offset + remaining_offset));
+  EXPECT_THAT(s, IsEmpty());
+  EXPECT_EQ(s.data(), data + offset + remaining_offset);
 }
 
 TEST(StringView, RemoveSuffix) {
@@ -138,10 +139,10 @@ TEST(StringView, RemoveSuffix) {
   string_view s = data;
   s.remove_suffix(offset);
   EXPECT_THAT(s, SizeIs(remaining_offset));
-  EXPECT_THAT(s.data(), Eq(data));
+  EXPECT_EQ(s.data(), data);
   s.remove_suffix(remaining_offset);
-  EXPECT_THAT(s, SizeIs(0));
-  EXPECT_THAT(s.data(), Eq(data));
+  EXPECT_THAT(s, IsEmpty());
+  EXPECT_EQ(s.data(), data);
 }
 
 TEST(StringView, RemovePrefixAndSuffix) {
@@ -151,10 +152,10 @@ TEST(StringView, RemovePrefixAndSuffix) {
   string_view s = data;
   s.remove_suffix(offset);
   EXPECT_THAT(s, SizeIs(remaining_offset));
-  EXPECT_THAT(s.data(), Eq(data));
+  EXPECT_EQ(s.data(), data);
   s.remove_prefix(remaining_offset);
-  EXPECT_THAT(s, SizeIs(0));
-  EXPECT_THAT(s.data(), Eq(data + remaining_offset));
+  EXPECT_THAT(s, IsEmpty());
+  EXPECT_EQ(s.data(), data + remaining_offset);
 }
 
 TEST(StringView, Swap) {
@@ -163,9 +164,9 @@ TEST(StringView, Swap) {
   string_view s = data_s;
   string_view t = data_t;
   s.swap(t);
-  EXPECT_THAT(s.data(), Eq(data_t));
+  EXPECT_EQ(s.data(), data_t);
   EXPECT_THAT(s, SizeIs(5));
-  EXPECT_THAT(t.data(), Eq(data_s));
+  EXPECT_EQ(t.data(), data_s);
   EXPECT_THAT(t, SizeIs(4));
   string_view empty;
   t.swap(empty);
@@ -177,27 +178,27 @@ TEST(StringView, Copy) {
   char data[5];
   // Copy the whole string.
   std::fill(std::begin(data), std::end(data), 0);
-  EXPECT_THAT(s.copy(data, 4), Eq(4));
-  EXPECT_THAT(strcmp(data, "hola"), Eq(0));
+  EXPECT_EQ(s.copy(data, 4), 4);
+  EXPECT_EQ(strcmp(data, "hola"), 0);
   // Copy a substring.
   std::fill(std::begin(data), std::end(data), 0);
-  EXPECT_THAT(s.copy(data, 4, 2), Eq(2));
-  EXPECT_THAT(strcmp(data, "la"), Eq(0));
+  EXPECT_EQ(s.copy(data, 4, 2), 2);
+  EXPECT_EQ(strcmp(data, "la"), 0);
   // Copy with a count bigger than the string's length.
   std::fill(std::begin(data), std::end(data), 0);
-  EXPECT_THAT(s.copy(data, 5), Eq(4));
-  EXPECT_THAT(strcmp(data, "hola"), Eq(0));
+  EXPECT_EQ(s.copy(data, 5), 4);
+  EXPECT_EQ(strcmp(data, "hola"), 0);
   // Copy an empty string.
   std::fill(std::begin(data), std::end(data), 0);
-  EXPECT_THAT(s.copy(data, 4, 4), Eq(0));
-  EXPECT_THAT(strcmp(data, ""), Eq(0));
+  EXPECT_EQ(s.copy(data, 4, 4), 0);
+  EXPECT_EQ(strcmp(data, ""), 0);
 }
 
 TEST(StringView, Substr) {
   const string_view s = "string view test";
-  EXPECT_THAT(s.substr(), Eq("string view test"));
-  EXPECT_THAT(s.substr(2), Eq("ring view test"));
-  EXPECT_THAT(s.substr(2, 3), Eq("rin"));
+  EXPECT_EQ(s.substr(), "string view test");
+  EXPECT_EQ(s.substr(2), "ring view test");
+  EXPECT_EQ(s.substr(2, 3), "rin");
   EXPECT_TRUE(s.substr(16, 1).empty());
 }
 
@@ -280,20 +281,20 @@ TEST(StringView, CompareNullStrings) {
 
 TEST(StringView, CompareEqualTo) {
   const string_view s = "hello";
-  EXPECT_THAT(s.compare(string_view("hello")), Eq(0));
-  EXPECT_THAT(s.compare("hello"), Eq(0));
+  EXPECT_EQ(s.compare(string_view("hello")), 0);
+  EXPECT_EQ(s.compare("hello"), 0);
 }
 
 TEST(StringView, CompareSubstringEqualTo) {
   const string_view s = "abc";
-  EXPECT_THAT(s.compare(1, 2, string_view("bc")), Eq(0));
-  EXPECT_THAT(s.compare(0, 2, string_view("ab")), Eq(0));
+  EXPECT_EQ(s.compare(1, 2, string_view("bc")), 0);
+  EXPECT_EQ(s.compare(0, 2, string_view("ab")), 0);
 }
 
 TEST(StringView, CompareSubstringEqualToSubstring) {
   const string_view s = "linux";
-  EXPECT_THAT(s.compare(2, 2, string_view("gnu"), 1, 2), Eq(0));
-  EXPECT_THAT(s.compare(0, 2, string_view("linus"), 0, 2), Eq(0));
+  EXPECT_EQ(s.compare(2, 2, string_view("gnu"), 1, 2), 0);
+  EXPECT_EQ(s.compare(0, 2, string_view("linus"), 0, 2), 0);
 }
 
 TEST(StringView, StartsWith) {
@@ -320,127 +321,127 @@ TEST(StringView, EndsWith) {
 
 TEST(StringView, FindPosTooLarge) {
   const string_view s = "pattern here";
-  EXPECT_THAT(s.find(string_view("pattern"), 30), Eq(string_view::npos));
-  EXPECT_THAT(s.find('p', 30), Eq(string_view::npos));
-  EXPECT_THAT(s.find("pattern", 30, 7), Eq(string_view::npos));
-  EXPECT_THAT(s.find("pattern", 30), Eq(string_view::npos));
+  EXPECT_EQ(s.find(string_view("pattern"), 30), string_view::npos);
+  EXPECT_EQ(s.find('p', 30), string_view::npos);
+  EXPECT_EQ(s.find("pattern", 30, 7), string_view::npos);
+  EXPECT_EQ(s.find("pattern", 30), string_view::npos);
 }
 
 TEST(StringView, FindPatternTooLarge) {
   const string_view s = "pattern here";
   EXPECT_THAT(s.find(string_view("pattern here and there")),
               Eq(string_view::npos));
-  EXPECT_THAT(s.find(string_view("pattern here"), 1), Eq(string_view::npos));
-  EXPECT_THAT(s.find("pattern here", 1), Eq(string_view::npos));
-  EXPECT_THAT(s.find("pattern here", 1, 12), Eq(string_view::npos));
+  EXPECT_EQ(s.find(string_view("pattern here"), 1), string_view::npos);
+  EXPECT_EQ(s.find("pattern here", 1), string_view::npos);
+  EXPECT_EQ(s.find("pattern here", 1, 12), string_view::npos);
 }
 
 TEST(StringView, FindNotFound) {
   const string_view s = "pattern here";
-  EXPECT_THAT(s.find(string_view("Pattern here")), Eq(string_view::npos));
-  EXPECT_THAT(s.find('z'), Eq(string_view::npos));
-  EXPECT_THAT(s.find('p', 1), Eq(string_view::npos));
-  EXPECT_THAT(s.find("Pattern"), Eq(string_view::npos));
-  EXPECT_THAT(s.find("attern", 2), Eq(string_view::npos));
-  EXPECT_THAT(s.find("ttern", 3, 5), Eq(string_view::npos));
+  EXPECT_EQ(s.find(string_view("Pattern here")), string_view::npos);
+  EXPECT_EQ(s.find('z'), string_view::npos);
+  EXPECT_EQ(s.find('p', 1), string_view::npos);
+  EXPECT_EQ(s.find("Pattern"), string_view::npos);
+  EXPECT_EQ(s.find("attern", 2), string_view::npos);
+  EXPECT_EQ(s.find("ttern", 3, 5), string_view::npos);
 }
 
 TEST(StringView, FindWithEmptyStrings) {
   const string_view empty;
-  EXPECT_THAT(empty.find('a'), Eq(string_view::npos));
-  EXPECT_THAT(empty.find('a', 1), Eq(string_view::npos));
-  EXPECT_THAT(empty.find(""), Eq(0));
-  EXPECT_THAT(empty.find("", 1), Eq(string_view::npos));
+  EXPECT_EQ(empty.find('a'), string_view::npos);
+  EXPECT_EQ(empty.find('a', 1), string_view::npos);
+  EXPECT_EQ(empty.find(""), 0);
+  EXPECT_EQ(empty.find("", 1), string_view::npos);
 
   const string_view s = "pattern";
-  EXPECT_THAT(s.find(""), Eq(0));
-  EXPECT_THAT(s.find("", 1), Eq(1));
+  EXPECT_EQ(s.find(""), 0);
+  EXPECT_EQ(s.find("", 1), 1);
 }
 
 TEST(StringView, FindSuccessful) {
   const string_view s = "pattern here pattern there, the end";
-  EXPECT_THAT(s.find(string_view("pattern")), Eq(0));
-  EXPECT_THAT(s.find('a'), Eq(1));
-  EXPECT_THAT(s.find('a', 2), Eq(14));
-  EXPECT_THAT(s.find("pattern", 1), Eq(13));
-  EXPECT_THAT(s.find("end", 1, 3), Eq(s.size() - 3));
-  EXPECT_THAT(s.find("end is near", 1, 3), Eq(s.size() - 3));
-  EXPECT_THAT(s.find("", s.size()), Eq(s.size()));
+  EXPECT_EQ(s.find(string_view("pattern")), 0);
+  EXPECT_EQ(s.find('a'), 1);
+  EXPECT_EQ(s.find('a', 2), 14);
+  EXPECT_EQ(s.find("pattern", 1), 13);
+  EXPECT_EQ(s.find("end", 1, 3), s.size() - 3);
+  EXPECT_EQ(s.find("end is near", 1, 3), s.size() - 3);
+  EXPECT_EQ(s.find("", s.size()), s.size());
 }
 
 TEST(StringView, RfindNotFound) {
   const string_view s = "pattern here";
-  EXPECT_THAT(s.rfind(string_view("pattern herE")), Eq(string_view::npos));
-  EXPECT_THAT(s.rfind('q'), Eq(string_view::npos));
-  EXPECT_THAT(s.rfind('a', 0), Eq(string_view::npos));
-  EXPECT_THAT(s.rfind("patterN"), Eq(string_view::npos));
-  EXPECT_THAT(s.rfind("Attern", 1), Eq(string_view::npos));
-  EXPECT_THAT(s.rfind("ttern", 1, 5), Eq(string_view::npos));
+  EXPECT_EQ(s.rfind(string_view("pattern herE")), string_view::npos);
+  EXPECT_EQ(s.rfind('q'), string_view::npos);
+  EXPECT_EQ(s.rfind('a', 0), string_view::npos);
+  EXPECT_EQ(s.rfind("patterN"), string_view::npos);
+  EXPECT_EQ(s.rfind("Attern", 1), string_view::npos);
+  EXPECT_EQ(s.rfind("ttern", 1, 5), string_view::npos);
 }
 
 TEST(StringView, RfindWithEmptyStrings) {
   const string_view empty;
-  EXPECT_THAT(empty.rfind('a'), Eq(string_view::npos));
-  EXPECT_THAT(empty.rfind('a', 1), Eq(string_view::npos));
-  EXPECT_THAT(empty.rfind(""), Eq(0));
-  EXPECT_THAT(empty.rfind("", 1), Eq(0));
+  EXPECT_EQ(empty.rfind('a'), string_view::npos);
+  EXPECT_EQ(empty.rfind('a', 1), string_view::npos);
+  EXPECT_EQ(empty.rfind(""), 0);
+  EXPECT_EQ(empty.rfind("", 1), 0);
 
   const string_view s = "pattern";
-  EXPECT_THAT(s.rfind(""), Eq(s.size()));
-  EXPECT_THAT(s.rfind("", s.size() - 2), Eq(s.size() - 2));
+  EXPECT_EQ(s.rfind(""), s.size());
+  EXPECT_EQ(s.rfind("", s.size() - 2), s.size() - 2);
 }
 
 TEST(StringView, RfindSuccessful) {
   const string_view s = "pattern here pattern there, the end";
-  EXPECT_THAT(s.rfind(string_view("pattern")), Eq(13));
-  EXPECT_THAT(s.rfind('a'), Eq(14));
-  EXPECT_THAT(s.rfind('a', 2), Eq(1));
-  EXPECT_THAT(s.rfind("pattern", 12), Eq(0));
-  EXPECT_THAT(s.rfind("end", s.size() - 2, 3), Eq(s.size() - 3));
-  EXPECT_THAT(s.rfind("end is near", s.size() - 2, 3), Eq(s.size() - 3));
+  EXPECT_EQ(s.rfind(string_view("pattern")), 13);
+  EXPECT_EQ(s.rfind('a'), 14);
+  EXPECT_EQ(s.rfind('a', 2), 1);
+  EXPECT_EQ(s.rfind("pattern", 12), 0);
+  EXPECT_EQ(s.rfind("end", s.size() - 2, 3), s.size() - 3);
+  EXPECT_EQ(s.rfind("end is near", s.size() - 2, 3), s.size() - 3);
 }
 
 TEST(StringView, FindFirstOfNotFound) {
   const string_view s = "pattern";
-  EXPECT_THAT(s.find_first_of(string_view("xyz")), Eq(string_view::npos));
-  EXPECT_THAT(s.find_first_of(string_view("n"), 7), Eq(string_view::npos));
-  EXPECT_THAT(s.find_first_of('z'), Eq(string_view::npos));
-  EXPECT_THAT(s.find_first_of('n', 7), Eq(string_view::npos));
-  EXPECT_THAT(s.find_first_of("aer", 6, 3), Eq(string_view::npos));
-  EXPECT_THAT(s.find_first_of("aer", 6), Eq(string_view::npos));
+  EXPECT_EQ(s.find_first_of(string_view("xyz")), string_view::npos);
+  EXPECT_EQ(s.find_first_of(string_view("n"), 7), string_view::npos);
+  EXPECT_EQ(s.find_first_of('z'), string_view::npos);
+  EXPECT_EQ(s.find_first_of('n', 7), string_view::npos);
+  EXPECT_EQ(s.find_first_of("aer", 6, 3), string_view::npos);
+  EXPECT_EQ(s.find_first_of("aer", 6), string_view::npos);
 }
 
 TEST(StringView, FindFirstOfSuccessful) {
   const string_view s = "pattern";
-  EXPECT_THAT(s.find_first_of(string_view("ate")), Eq(1));
-  EXPECT_THAT(s.find_first_of(string_view("e"), 2), Eq(4));
-  EXPECT_THAT(s.find_first_of('a'), Eq(1));
-  EXPECT_THAT(s.find_first_of('n', 2), Eq(6));
-  EXPECT_THAT(s.find_first_of("rnt", 2, 2), Eq(5));
-  EXPECT_THAT(s.find_first_of("rnt", 2), Eq(2));
+  EXPECT_EQ(s.find_first_of(string_view("ate")), 1);
+  EXPECT_EQ(s.find_first_of(string_view("e"), 2), 4);
+  EXPECT_EQ(s.find_first_of('a'), 1);
+  EXPECT_EQ(s.find_first_of('n', 2), 6);
+  EXPECT_EQ(s.find_first_of("rnt", 2, 2), 5);
+  EXPECT_EQ(s.find_first_of("rnt", 2), 2);
 }
 
 TEST(StringView, FindLastOfNotFound) {
   const string_view s = "pattern";
-  EXPECT_THAT(s.find_last_of(string_view("xyz")), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_of(string_view("n"), 5), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_of('z'), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_of('n', 5), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_of("tea", 1, 2), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_of("te", 1), Eq(string_view::npos));
+  EXPECT_EQ(s.find_last_of(string_view("xyz")), string_view::npos);
+  EXPECT_EQ(s.find_last_of(string_view("n"), 5), string_view::npos);
+  EXPECT_EQ(s.find_last_of('z'), string_view::npos);
+  EXPECT_EQ(s.find_last_of('n', 5), string_view::npos);
+  EXPECT_EQ(s.find_last_of("tea", 1, 2), string_view::npos);
+  EXPECT_EQ(s.find_last_of("te", 1), string_view::npos);
 
   const string_view empty;
-  EXPECT_THAT(empty.find_last_of(string_view("")), Eq(string_view::npos));
+  EXPECT_EQ(empty.find_last_of(string_view("")), string_view::npos);
 }
 
 TEST(StringView, FindLastOfSuccessful) {
   const string_view s = "pattern";
-  EXPECT_THAT(s.find_last_of(string_view("ate")), Eq(4));
-  EXPECT_THAT(s.find_last_of(string_view("p"), 2), Eq(0));
-  EXPECT_THAT(s.find_last_of('t'), Eq(3));
-  EXPECT_THAT(s.find_last_of('t', 2), Eq(2));
-  EXPECT_THAT(s.find_last_of("pa", 1, 1), Eq(0));
-  EXPECT_THAT(s.find_last_of("rnt", 2), Eq(2));
+  EXPECT_EQ(s.find_last_of(string_view("ate")), 4);
+  EXPECT_EQ(s.find_last_of(string_view("p"), 2), 0);
+  EXPECT_EQ(s.find_last_of('t'), 3);
+  EXPECT_EQ(s.find_last_of('t', 2), 2);
+  EXPECT_EQ(s.find_last_of("pa", 1, 1), 0);
+  EXPECT_EQ(s.find_last_of("rnt", 2), 2);
 }
 
 TEST(StringView, FindFirstNotOfNotFound) {
@@ -449,44 +450,44 @@ TEST(StringView, FindFirstNotOfNotFound) {
               Eq(string_view::npos));
   EXPECT_THAT(s.find_first_not_of(string_view("tern"), 2),
               Eq(string_view::npos));
-  EXPECT_THAT(s.find_first_not_of('n', 6), Eq(string_view::npos));
-  EXPECT_THAT(s.find_first_not_of("paternz", 1, 6), Eq(string_view::npos));
-  EXPECT_THAT(s.find_first_not_of("rn", 5), Eq(string_view::npos));
+  EXPECT_EQ(s.find_first_not_of('n', 6), string_view::npos);
+  EXPECT_EQ(s.find_first_not_of("paternz", 1, 6), string_view::npos);
+  EXPECT_EQ(s.find_first_not_of("rn", 5), string_view::npos);
 
   const string_view empty;
-  EXPECT_THAT(empty.find_first_not_of(string_view("")), Eq(string_view::npos));
+  EXPECT_EQ(empty.find_first_not_of(string_view("")), string_view::npos);
 }
 
 TEST(StringView, FindFirstNotOfSuccessful) {
   const string_view s = "pattern";
-  EXPECT_THAT(s.find_first_not_of(string_view("ate")), Eq(0));
-  EXPECT_THAT(s.find_first_not_of(string_view("t"), 2), Eq(4));
-  EXPECT_THAT(s.find_first_not_of('t'), Eq(0));
-  EXPECT_THAT(s.find_first_not_of('t', 2), Eq(4));
-  EXPECT_THAT(s.find_first_not_of("pa", 1, 1), Eq(1));
-  EXPECT_THAT(s.find_first_not_of("rnt", 2), Eq(4));
+  EXPECT_EQ(s.find_first_not_of(string_view("ate")), 0);
+  EXPECT_EQ(s.find_first_not_of(string_view("t"), 2), 4);
+  EXPECT_EQ(s.find_first_not_of('t'), 0);
+  EXPECT_EQ(s.find_first_not_of('t', 2), 4);
+  EXPECT_EQ(s.find_first_not_of("pa", 1, 1), 1);
+  EXPECT_EQ(s.find_first_not_of("rnt", 2), 4);
 }
 
 TEST(StringView, FindLastNotOfNotFound) {
   const string_view s = "pattern";
-  EXPECT_THAT(s.find_last_not_of(string_view("patern")), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_not_of(string_view("pat"), 2), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_not_of('p', 0), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_not_of("paternz", 6, 6), Eq(string_view::npos));
-  EXPECT_THAT(s.find_last_not_of("pa", 1), Eq(string_view::npos));
+  EXPECT_EQ(s.find_last_not_of(string_view("patern")), string_view::npos);
+  EXPECT_EQ(s.find_last_not_of(string_view("pat"), 2), string_view::npos);
+  EXPECT_EQ(s.find_last_not_of('p', 0), string_view::npos);
+  EXPECT_EQ(s.find_last_not_of("paternz", 6, 6), string_view::npos);
+  EXPECT_EQ(s.find_last_not_of("pa", 1), string_view::npos);
 
   const string_view empty;
-  EXPECT_THAT(empty.find_last_not_of(string_view("")), Eq(string_view::npos));
+  EXPECT_EQ(empty.find_last_not_of(string_view("")), string_view::npos);
 }
 
 TEST(StringView, FindLastNotOfSuccessful) {
   const string_view s = "pattern";
-  EXPECT_THAT(s.find_last_not_of(string_view("enr")), Eq(3));
-  EXPECT_THAT(s.find_last_not_of(string_view("rn"), 6), Eq(4));
-  EXPECT_THAT(s.find_last_not_of('t'), Eq(6));
-  EXPECT_THAT(s.find_last_not_of('t', 2), Eq(1));
-  EXPECT_THAT(s.find_last_not_of("rn", 6, 1), Eq(6));
-  EXPECT_THAT(s.find_last_not_of("rnt", 2), Eq(1));
+  EXPECT_EQ(s.find_last_not_of(string_view("enr")), 3);
+  EXPECT_EQ(s.find_last_not_of(string_view("rn"), 6), 4);
+  EXPECT_EQ(s.find_last_not_of('t'), 6);
+  EXPECT_EQ(s.find_last_not_of('t', 2), 1);
+  EXPECT_EQ(s.find_last_not_of("rn", 6, 1), 6);
+  EXPECT_EQ(s.find_last_not_of("rnt", 2), 1);
 }
 
 TEST(StringView, EqualOpDifferentSizes) {
@@ -510,8 +511,8 @@ TEST(StringView, EqualOpSameSizeDifferentData) {
 
 TEST(StringView, EqualOp) {
   const string_view a = "hello";
-  EXPECT_THAT(a, Eq(string_view("hello world", 5)));
-  EXPECT_THAT(a, Eq(string_view("hello")));
+  EXPECT_EQ(a, string_view("hello world", 5));
+  EXPECT_EQ(a, string_view("hello"));
   EXPECT_THAT(a, Not(Ne(string_view("hello world", 5))));
   EXPECT_THAT(a, Not(Ne(string_view("hello"))));
 }
