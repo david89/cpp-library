@@ -44,6 +44,18 @@ int string_view::compare(string_view s) const noexcept {
   return len_ < s.len_ ? -1 : 1;
 }
 
+bool string_view::starts_with(string_view s) const noexcept {
+  return substr(0, s.size()) == s;
+}
+
+bool string_view::starts_with(string_view::value_type c) const noexcept {
+  return !empty() && traits_type::eq(front(), c);
+};
+
+bool string_view::starts_with(string_view::const_pointer s) const {
+  return starts_with(string_view(s));
+}
+
 string_view::size_type
 string_view::find(string_view s, string_view::size_type pos) const noexcept {
   if (empty() && s.empty() && pos == 0) {

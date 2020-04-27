@@ -296,6 +296,16 @@ TEST(StringView, CompareSubstringEqualToSubstring) {
   EXPECT_THAT(s.compare(0, 2, string_view("linus"), 0, 2), Eq(0));
 }
 
+TEST(StringView, StartsWith) {
+  const string_view s = "some text";
+  EXPECT_TRUE(s.starts_with(string_view("some")));
+  EXPECT_TRUE(s.starts_with('s'));
+  EXPECT_TRUE(s.starts_with("some"));
+  EXPECT_FALSE(s.starts_with(string_view("not")));
+  EXPECT_FALSE(s.starts_with('t'));
+  EXPECT_FALSE(s.starts_with("not"));
+}
+
 TEST(StringView, FindPosTooLarge) {
   const string_view s = "pattern here";
   EXPECT_THAT(s.find(string_view("pattern"), 30), Eq(string_view::npos));
