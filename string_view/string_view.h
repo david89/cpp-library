@@ -393,9 +393,21 @@ constexpr typename basic_string_view<CharT, Traits>::size_type
     basic_string_view<CharT, Traits>::kMaxSize;
 
 using string_view = basic_string_view<char>;
+using u16string_view = basic_string_view<char16_t>;
+using u32string_view = basic_string_view<char32_t>;
+using wstring_view = basic_string_view<wchar_t>;
 
 string_view operator"" _sv(const char* str, std::size_t len) noexcept {
   return string_view(str, len);
+}
+u16string_view operator"" _sv(const char16_t* str, std::size_t len) noexcept {
+  return u16string_view(str, len);
+}
+u32string_view operator"" _sv(const char32_t* str, std::size_t len) noexcept {
+  return u32string_view(str, len);
+}
+wstring_view operator"" _sv(const wchar_t* str, std::size_t len) noexcept {
+  return wstring_view(str, len);
 }
 
 }  // namespace dagomez
