@@ -1,4 +1,9 @@
-# string_view
+#string_view
+
+## Add hook
+```
+./scripts/install-hooks.sh
+```
 
 ## Run tests
 ```
