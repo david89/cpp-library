@@ -101,6 +101,7 @@ public:
     s = other;
   }
 
+  // Operations.
   // Copies the substring [pos, pos + rcount) to the character string pointed to
   // by dest, where rcount is the smaller of count and size() - pos.
   size_type copy(pointer dest, size_type count, size_type pos = 0) const;
@@ -109,14 +110,11 @@ public:
   string_view substr(size_type pos = 0, size_type count = npos) const;
   // Compares two character sequences.
   int compare(string_view s) const noexcept {
-    // TODO(dagomez): try to incorporate constexpr std::min here.
-    if (len_ < s.len_) {
-      const int comparison = traits_type::compare(data_, s.data_, len_);
-      return comparison != 0 ? comparison : -1;
-    }
-
-    const int comparison = traits_type::compare(data_, s.data_, s.len_);
-    return comparison != 0 ? comparison : (len_ == s.len_ ? 0 : 1);
+    const size_t rlen = std::min(len_, s.len_);
+    const int comparison = traits_type::compare(data_, s.data_, rlen);
+    if (comparison != 0) return comparison;
+    if (len_ == s.len_) return 0;
+    return len_ < s.len_ ? -1 : 1;
   }
   // Compare substring(pos1, count1) with s.
   int compare(size_type pos1, size_type count1, string_view s) const {
