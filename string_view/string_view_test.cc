@@ -21,8 +21,7 @@ using ::testing::Ne;
 using ::testing::Not;
 using ::testing::SizeIs;
 
-std::string join_strs_by_null(
-    std::string a, std::string b) {
+std::string join_strs_by_null(std::string a, std::string b) {
   a.push_back('\0');
   a.append(std::move(b));
   return a;
@@ -107,9 +106,9 @@ TEST(StringView, AtFailsWhenOutOfRange) {
   try {
     s.at(100);
     FAIL() << "Expected assertion before";
-  } catch(const std::out_of_range& e) {
+  } catch (const std::out_of_range& e) {
     EXPECT_THAT(e.what(), HasSubstr("range"));
-  } catch(...) {
+  } catch (...) {
     FAIL() << "Expected out_of_range exception";
   }
 }
@@ -121,8 +120,8 @@ TEST(StringView, MaxSize) {
 
 TEST(StringView, RemovePrefix) {
   const char data[] = "hello world!";
-  constexpr string_view::size_type offset = 6;  /* size of "hello " */
-  constexpr string_view::size_type remaining_offset = 6;  /* size of "world!" */
+  constexpr string_view::size_type offset = 6;           /* size of "hello " */
+  constexpr string_view::size_type remaining_offset = 6; /* size of "world!" */
   string_view s = data;
   s.remove_prefix(offset);
   EXPECT_THAT(s, SizeIs(remaining_offset));
@@ -134,8 +133,8 @@ TEST(StringView, RemovePrefix) {
 
 TEST(StringView, RemoveSuffix) {
   const char data[] = "hola mundo!";
-  constexpr string_view::size_type offset = 6;  /* size of "mundo!" */
-  constexpr string_view::size_type remaining_offset = 5;  /* size of "¡hola " */
+  constexpr string_view::size_type offset = 6;           /* size of "mundo!" */
+  constexpr string_view::size_type remaining_offset = 5; /* size of "¡hola " */
   string_view s = data;
   s.remove_suffix(offset);
   EXPECT_THAT(s, SizeIs(remaining_offset));
@@ -147,8 +146,8 @@ TEST(StringView, RemoveSuffix) {
 
 TEST(StringView, RemovePrefixAndSuffix) {
   const char data[] = "hello mundo!";
-  constexpr string_view::size_type offset = 6;  /* size of "mundo!" */
-  constexpr string_view::size_type remaining_offset = 6;  /* size of "hello " */
+  constexpr string_view::size_type offset = 6;           /* size of "mundo!" */
+  constexpr string_view::size_type remaining_offset = 6; /* size of "hello " */
   string_view s = data;
   s.remove_suffix(offset);
   EXPECT_THAT(s, SizeIs(remaining_offset));

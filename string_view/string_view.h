@@ -1,17 +1,15 @@
 #ifndef LIBRARY_STRING_VIEW
 #define LIBRARY_STRING_VIEW
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <cstring>
-
-#include <algorithm>
+#include <iostream>
 #include <iterator>
 #include <ostream>
 #include <stdexcept>
 #include <string>
-
-#include <iostream>
 
 namespace dagomez {
 
@@ -20,7 +18,7 @@ namespace dagomez {
 // TODO: Define this as basic_string_view, and let string_view =
 // basic_string_view<char>
 class string_view {
-public:
+ public:
   // Types.
   using traits_type = std::char_traits<char>;
   using value_type = char;
@@ -43,8 +41,7 @@ public:
       : data_(str), len_(internal_strlen(str)) {}
   constexpr string_view(const_pointer str, size_type len)
       : data_(str), len_(len) {}
-  string_view(const std::string& str)
-      : data_(str.data()), len_(str.size()) {}
+  string_view(const std::string& str) : data_(str.data()), len_(str.size()) {}
 
   // Assignment.
   string_view& operator=(const string_view&) noexcept = default;
@@ -75,27 +72,17 @@ public:
   constexpr const_pointer data() const noexcept { return data_; }
 
   // Capacity.
-  constexpr size_type size() const noexcept {
-    return len_;
-  }
-  constexpr size_type length() const noexcept {
-    return size();
-  }
-  constexpr size_type max_size() const noexcept {
-    return kMaxSize;
-  }
-  constexpr bool empty() const noexcept {
-    return len_ == 0;
-  }
+  constexpr size_type size() const noexcept { return len_; }
+  constexpr size_type length() const noexcept { return size(); }
+  constexpr size_type max_size() const noexcept { return kMaxSize; }
+  constexpr bool empty() const noexcept { return len_ == 0; }
 
   // Modifiers.
   void remove_prefix(size_type n) {
     data_ = data_ + n;
     len_ -= n;
   }
-  void remove_suffix(size_type n) {
-    len_ -= n;
-  }
+  void remove_suffix(size_type n) { len_ -= n; }
   void swap(string_view& s) noexcept {
     string_view other = *this;
     *this = s;
@@ -116,19 +103,16 @@ public:
     return substr(pos1, count1).compare(s);
   }
   // Compare substring(pos1, count1) with s.substring(pos2, count2).
-  int compare(size_type pos1, size_type count1, string_view s,
-                        size_type pos2, size_type count2) const {
+  int compare(size_type pos1, size_type count1, string_view s, size_type pos2,
+              size_type count2) const {
     return substr(pos1, count1).compare(s.substr(pos2, count2));
   }
-  int compare(const_pointer s) const {
-    return compare(string_view(s));
-  }
-  int compare(size_type pos1, size_type count1,
-                        const_pointer s) const {
+  int compare(const_pointer s) const { return compare(string_view(s)); }
+  int compare(size_type pos1, size_type count1, const_pointer s) const {
     return substr(pos1, count1).compare(string_view(s));
   }
   int compare(size_type pos1, size_type count1, const_pointer s,
-                        size_type count2) const {
+              size_type count2) const {
     return substr(pos1, count1).compare(string_view(s, count2));
   }
   bool starts_with(string_view s) const noexcept;
@@ -158,41 +142,34 @@ public:
     return rfind(string_view(s), pos);
   }
   size_type find_first_of(string_view s, size_type pos = 0) const noexcept;
-  size_type find_first_of(value_type c, size_type pos = 0) const
-      noexcept {
+  size_type find_first_of(value_type c, size_type pos = 0) const noexcept {
     return find_first_of(string_view(&c, 1), pos);
   }
-  size_type find_first_of(const_pointer s, size_type pos,
-                                    size_type n) const {
+  size_type find_first_of(const_pointer s, size_type pos, size_type n) const {
     return find_first_of(string_view(s, n), pos);
   }
   size_type find_first_of(const_pointer s, size_type pos = 0) const {
     return find_first_of(string_view(s), pos);
   }
   size_type find_last_of(string_view s, size_type pos = npos) const noexcept;
-  size_type find_last_of(value_type c, size_type pos = npos) const
-      noexcept {
+  size_type find_last_of(value_type c, size_type pos = npos) const noexcept {
     return find_last_of(string_view(&c, 1), pos);
   }
-  size_type find_last_of(const_pointer s, size_type pos,
-                                   size_type n) const {
+  size_type find_last_of(const_pointer s, size_type pos, size_type n) const {
     return find_last_of(string_view(s, n), pos);
   }
-  size_type find_last_of(const_pointer s,
-                                   size_type pos = npos) const {
+  size_type find_last_of(const_pointer s, size_type pos = npos) const {
     return find_last_of(string_view(s), pos);
   }
   size_type find_first_not_of(string_view s, size_type pos = 0) const noexcept;
-  size_type find_first_not_of(value_type c, size_type pos = 0) const
-      noexcept {
+  size_type find_first_not_of(value_type c, size_type pos = 0) const noexcept {
     return find_first_not_of(string_view(&c, 1), pos);
   }
   size_type find_first_not_of(const_pointer s, size_type pos,
-                                        size_type n) const {
+                              size_type n) const {
     return find_first_not_of(string_view(s, n), pos);
   }
-  size_type find_first_not_of(const_pointer s,
-                                        size_type pos = 0) const {
+  size_type find_first_not_of(const_pointer s, size_type pos = 0) const {
     return find_first_not_of(string_view(s), pos);
   }
   size_type find_last_not_of(string_view s,
@@ -209,7 +186,7 @@ public:
     return find_last_not_of(string_view(s), pos);
   }
 
-private:
+ private:
   constexpr static size_type internal_strlen(const_pointer str) {
     return str ? strlen(str) : 0;
   }
@@ -245,6 +222,6 @@ inline bool operator>=(string_view a, string_view b) noexcept {
 
 std::ostream& operator<<(std::ostream& os, string_view s);
 
-}  // dagomez
+}  // namespace dagomez
 
 #endif  // LIBRARY_STRING_VIEW

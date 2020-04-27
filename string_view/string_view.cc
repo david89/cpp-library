@@ -24,9 +24,8 @@ string_view::size_type string_view::copy(string_view::pointer dest,
   return rcount;
 }
 
-string_view
-string_view::substr(string_view::size_type pos,
-                    string_view::size_type count) const {
+string_view string_view::substr(string_view::size_type pos,
+                                string_view::size_type count) const {
   if (pos > len_) {
     throw std::out_of_range("Out of range");
   }
@@ -70,8 +69,8 @@ bool string_view::ends_with(const_pointer s) const {
   return ends_with(string_view(s));
 }
 
-string_view::size_type
-string_view::find(string_view s, string_view::size_type pos) const noexcept {
+string_view::size_type string_view::find(
+    string_view s, string_view::size_type pos) const noexcept {
   if (empty() && s.empty() && pos == 0) {
     return 0;
   }
@@ -91,8 +90,8 @@ string_view::find(string_view s, string_view::size_type pos) const noexcept {
   return npos;
 }
 
-string_view::size_type
-string_view::rfind(string_view s, string_view::size_type pos) const noexcept {
+string_view::size_type string_view::rfind(
+    string_view s, string_view::size_type pos) const noexcept {
   if (s.empty()) {
     return std::min(pos, len_);
   }
@@ -111,9 +110,8 @@ string_view::rfind(string_view s, string_view::size_type pos) const noexcept {
   return npos;
 }
 
-string_view::size_type
-string_view::find_first_of(string_view s, string_view::size_type pos) const
-    noexcept {
+string_view::size_type string_view::find_first_of(
+    string_view s, string_view::size_type pos) const noexcept {
   while (pos < len_) {
     if (traits_type::find(s.data_, s.len_, data_[pos]) != nullptr) {
       return pos;
@@ -125,9 +123,8 @@ string_view::find_first_of(string_view s, string_view::size_type pos) const
   return npos;
 }
 
-string_view::size_type
-string_view::find_last_of(string_view s, string_view::size_type pos) const
-    noexcept {
+string_view::size_type string_view::find_last_of(
+    string_view s, string_view::size_type pos) const noexcept {
   if (empty()) {
     return npos;
   }
@@ -144,9 +141,8 @@ string_view::find_last_of(string_view s, string_view::size_type pos) const
   return npos;
 }
 
-string_view::size_type
-string_view::find_first_not_of(string_view s, string_view::size_type pos) const
-    noexcept {
+string_view::size_type string_view::find_first_not_of(
+    string_view s, string_view::size_type pos) const noexcept {
   while (pos < len_) {
     if (traits_type::find(s.data_, s.len_, data_[pos]) == nullptr) {
       return pos;
@@ -158,9 +154,8 @@ string_view::find_first_not_of(string_view s, string_view::size_type pos) const
   return npos;
 }
 
-string_view::size_type
-string_view::find_last_not_of(string_view s, string_view::size_type pos) const
-    noexcept {
+string_view::size_type string_view::find_last_not_of(
+    string_view s, string_view::size_type pos) const noexcept {
   if (empty()) {
     return npos;
   }
@@ -193,7 +188,8 @@ std::ostream& operator<<(std::ostream& os, string_view s) {
   }
 
   bool align_left = os.flags() & std::ios_base::left;
-  //github.com/andrewseidl/githook-clang-formatool align_left = os.flags() & std::ios_base::left;
+  // github.com/andrewseidl/githook-clang-formatool align_left = os.flags() &
+  // std::ios_base::left;
   if (!padding.empty() && !align_left) {
     os.write(padding.data(), padding.size());
   }
@@ -206,4 +202,4 @@ std::ostream& operator<<(std::ostream& os, string_view s) {
   return os;
 }
 
-} // namespace dagomez
+}  // namespace dagomez
