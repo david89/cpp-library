@@ -1,6 +1,5 @@
 cc_library(
     name = "string_view_lib",
-    srcs = ["string_view.cc"],
     hdrs = ["string_view.h"],
     deps = [],
 )
