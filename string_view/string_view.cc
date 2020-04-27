@@ -181,21 +181,21 @@ std::ostream& operator<<(std::ostream& os, string_view s) {
   // Ideas from:
   // https://stackoverflow.com/questions/39653508/implementation-of-string-view-formatted-stream-ouput
 
-  std::string padding;
+  size_t padding = 0;
+  char filler = os.fill();
   if (s.size() < os.width()) {
-    // TODO(dagomez): This is not efficient, but let's get this working first.
-    padding = std::string(os.width() - s.size(), os.fill());
+    padding = os.width() - s.size();
   }
 
   bool align_left = os.flags() & std::ios_base::left;
   // github.com/andrewseidl/githook-clang-formatool align_left = os.flags() &
   // std::ios_base::left;
-  if (!padding.empty() && !align_left) {
-    os.write(padding.data(), padding.size());
+  if (padding > 0 && !align_left) {
+    while (padding--) os.put(filler);
   }
   os.write(s.data(), s.size());
-  if (!padding.empty() && align_left) {
-    os.write(padding.data(), padding.size());
+  if (padding > 0 && align_left) {
+    while (padding--) os.put(filler);
   }
 
   os.width(0);
