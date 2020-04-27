@@ -4,6 +4,8 @@
 
 namespace dagomez {
 
+constexpr string_view::size_type string_view::npos;
+
 string_view::const_reference string_view::at(size_type pos) const {
   if (pos > len_) {
     throw std::out_of_range("Out of range");
