@@ -202,4 +202,8 @@ std::ostream& operator<<(std::ostream& os, string_view s) {
   return os;
 }
 
+string_view operator"" _sv(const char* str, std::size_t len) noexcept {
+  return string_view(str, len);
+}
+
 }  // namespace dagomez

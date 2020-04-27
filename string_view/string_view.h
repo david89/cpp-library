@@ -222,6 +222,8 @@ inline bool operator>=(string_view a, string_view b) noexcept {
 
 std::ostream& operator<<(std::ostream& os, string_view s);
 
+string_view operator"" _sv(const char* str, std::size_t len) noexcept;
+
 }  // namespace dagomez
 
 namespace std {

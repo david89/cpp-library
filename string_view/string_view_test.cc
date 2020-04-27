@@ -584,5 +584,9 @@ TEST(StringView, Hash) {
             std::hash<std::string>{}("hello world"));
 }
 
+TEST(StringView, Literals) {
+  EXPECT_EQ(string_view("hello world"), "hello world"_sv);
+}
+
 }  // namespace
 }  // namespace dagomez
