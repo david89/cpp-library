@@ -109,13 +109,7 @@ public:
   // smaller of count and size() - pos.
   string_view substr(size_type pos = 0, size_type count = npos) const;
   // Compares two character sequences.
-  int compare(string_view s) const noexcept {
-    const size_t rlen = std::min(len_, s.len_);
-    const int comparison = traits_type::compare(data_, s.data_, rlen);
-    if (comparison != 0) return comparison;
-    if (len_ == s.len_) return 0;
-    return len_ < s.len_ ? -1 : 1;
-  }
+  int compare(string_view s) const noexcept;
   // Compare substring(pos1, count1) with s.
   int compare(size_type pos1, size_type count1, string_view s) const {
     return substr(pos1, count1).compare(s);
