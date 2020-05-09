@@ -172,10 +172,8 @@ class basic_string_view {
     if (pos > len_ || s.len_ > (len_ - pos)) {
       return npos;
     }
-    // We cannot just use strstr, because we may have non-null terminated
-    // strings, so we have to implement our own version.
     while (pos + s.len_ <= len_) {
-      if (memcmp(data_ + pos, s.data_, s.len_) == 0) {
+      if (traits_type::compare(data_ + pos, s.data_, s.len_) == 0) {
         return pos;
       }
 
@@ -202,7 +200,7 @@ class basic_string_view {
     }
     pos = std::min(pos, len_ - s.len_);
     while (pos != npos) {
-      if (memcmp(data_ + pos, s.data_, s.len_) == 0) {
+      if (traits_type::compare(data_ + pos, s.data_, s.len_) == 0) {
         return pos;
       }
 
