@@ -7,7 +7,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-namespace dagomez {
+namespace david {
 namespace {
 
 using ::testing::Eq;
@@ -594,4 +594,4 @@ TEST(StringView, Literals) {
 }
 
 }  // namespace
-}  // namespace dagomez
+}  // namespace david

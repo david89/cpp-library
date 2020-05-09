@@ -12,7 +12,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace dagomez {
+namespace david {
 
 // NOTE: using https://en.cppreference.com/w/cpp/string/basic_string_view as a
 // guide.
@@ -410,12 +410,12 @@ wstring_view operator"" _sv(const wchar_t* str, std::size_t len) noexcept {
   return wstring_view(str, len);
 }
 
-}  // namespace dagomez
+}  // namespace david
 
 namespace std {
 template <>
-struct hash<dagomez::string_view> {
-  size_t operator()(dagomez::string_view s) const {
+struct hash<david::string_view> {
+  size_t operator()(david::string_view s) const {
     // Extracted from
     // https://stackoverflow.com/a/19411888
     return std::_Hash_impl::hash(s.data(), s.length());
