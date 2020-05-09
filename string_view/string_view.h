@@ -316,42 +316,44 @@ class basic_string_view {
     return find_last_not_of(basic_string_view(s), pos);
   }
 
+  // We need these to be friend non-member functions because we want to compare
+  // operands with different types (for example string_view vs const char*).
+  // https://stackoverflow.com/a/3850120
   friend inline bool operator==(basic_string_view a,
                                 basic_string_view b) noexcept {
     return a.compare(b) == 0;
   }
-  friend inline bool operator!=(basic_string_view<CharT, Traits> a,
-                                basic_string_view<CharT, Traits> b) noexcept {
+  friend inline bool operator!=(basic_string_view a,
+                                basic_string_view b) noexcept {
     return a.compare(b) != 0;
   }
 
-  friend inline bool operator<(basic_string_view<CharT, Traits> a,
-                               basic_string_view<CharT, Traits> b) noexcept {
+  friend inline bool operator<(basic_string_view a,
+                               basic_string_view b) noexcept {
     return a.compare(b) < 0;
   }
 
-  friend inline bool operator>(basic_string_view<CharT, Traits> a,
-                               basic_string_view<CharT, Traits> b) noexcept {
+  friend inline bool operator>(basic_string_view a,
+                               basic_string_view b) noexcept {
     return a.compare(b) > 0;
   }
 
-  friend inline bool operator<=(basic_string_view<CharT, Traits> a,
-                                basic_string_view<CharT, Traits> b) noexcept {
+  friend inline bool operator<=(basic_string_view a,
+                                basic_string_view b) noexcept {
     return a.compare(b) <= 0;
   }
 
-  friend inline bool operator>=(basic_string_view<CharT, Traits> a,
-                                basic_string_view<CharT, Traits> b) noexcept {
+  friend inline bool operator>=(basic_string_view a,
+                                basic_string_view b) noexcept {
     return a.compare(b) >= 0;
   }
 
-  friend std::ostream& operator<<(std::ostream& os,
-                                  basic_string_view<CharT, Traits> s) {
+  friend std::ostream& operator<<(std::ostream& os, basic_string_view s) {
     std::ostream::sentry sentry{os};
     if (!sentry) return os;
 
     // Ideas from:
-    // https://stackoverflow.com/questions/39653508/implementation-of-string-view-formatted-stream-ouput
+    // https://stackoverflow.com/q/39653508
 
     size_t padding = 0;
     char filler = os.fill();
@@ -415,7 +417,7 @@ template <>
 struct hash<dagomez::string_view> {
   size_t operator()(dagomez::string_view s) const {
     // Extracted from
-    // https://stackoverflow.com/questions/19411742/what-is-the-default-hash-function-used-in-c-stdunordered-map
+    // https://stackoverflow.com/a/19411888
     return std::_Hash_impl::hash(s.data(), s.length());
   }
 };
