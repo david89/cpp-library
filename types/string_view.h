@@ -1,5 +1,5 @@
-#ifndef LIBRARY_STRING_VIEW
-#define LIBRARY_STRING_VIEW
+#ifndef TYPES_STRING_VIEW
+#define TYPES_STRING_VIEW
 
 #include <algorithm>
 #include <cassert>
@@ -423,4 +423,4 @@ struct hash<david::string_view> {
 };
 }  // namespace std
 
-#endif  // LIBRARY_STRING_VIEW
+#endif  // TYPES_STRING_VIEW
