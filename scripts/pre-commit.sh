@@ -18,7 +18,7 @@ done
 cd "${0%/*}/.."
 
 echo "Running tests"
-bazel test --cxxopt='-std=c++11' //string_view:string_view_test
+bazel test --cxxopt='-std=c++11' //types:all
 if [ $? -ne 0 ]; then
   echo "Commit failed due to failing tests"
   exit 1
