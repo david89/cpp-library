@@ -46,15 +46,8 @@ class optional_constructors<T, true, false> : public optional_rep<T> {
 };
 
 // Non copy constructible types cannot be instantiated.
-template <typename T>
-class optional_constructors<T, false, true> : public optional_rep<T> {
- public:
-  optional_constructors() noexcept = default;
-  optional_constructors(const optional_constructors&) = delete;
-};
-
-template <typename T>
-class optional_constructors<T, false, false> : public optional_rep<T> {
+template <typename T, bool unused>
+class optional_constructors<T, false, unused> : public optional_rep<T> {
  public:
   optional_constructors() noexcept = default;
   optional_constructors(const optional_constructors&) = delete;
