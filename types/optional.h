@@ -5,7 +5,7 @@
 #include <iostream>
 #include <memory>
 
-#include "types/internal/enable_copy.h"
+#include "types/internal/enable_copy_move.h"
 
 namespace david {
 namespace internal {

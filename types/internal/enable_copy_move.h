@@ -1,5 +1,5 @@
-#ifndef TYPES_INTERNAL_ENABLE_COPY
-#define TYPES_INTERNAL_ENABLE_COPY
+#ifndef TYPES_INTERNAL_ENABLE_COPY_MOVE
+#define TYPES_INTERNAL_ENABLE_COPY_MOVE
 
 namespace david {
 namespace internal {
@@ -174,4 +174,4 @@ struct enable_copy_move<true, true, true, true> {
 }  // namespace internal
 }  // namespace david
 
-#endif  // TYPES_INTERNAL_ENABLE_COPY
+#endif  // TYPES_INTERNAL_ENABLE_COPY_MOVE
