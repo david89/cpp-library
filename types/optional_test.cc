@@ -52,13 +52,24 @@ TEST(Optional, IsNonTriviallyCopyAssignable) {
 TEST(Optional, IsNonCopyConstructible) {
   optional<std::unique_ptr<int>> a;
   // This line doesn't compile as expected.
-  // optional<A> b(a);
+  // optional<std::unique_ptr<int>> b(a);
 }
 
 TEST(Optional, IsNonCopyAssignable) {
   optional<std::unique_ptr<int>> a;
   // This line doesn't compile as expected.
-  // optional<A> b = a;
+  // optional<std::unique_ptr<int>> b = a;
+}
+
+TEST(Optional, AssignedWithNullopt) {
+  optional<int> a = nullopt;
+  EXPECT_FALSE(a);
+}
+
+TEST(Optional, IsTriviallyMoveConstructible) {
+  optional<std::unique_ptr<int>> a;
+  optional<std::unique_ptr<int>> b(std::move(a));
+  EXPECT_FALSE(b);
 }
 
 }  // namespace
