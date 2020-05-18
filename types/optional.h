@@ -5,52 +5,63 @@
 #include <iostream>
 #include <memory>
 
+#include "types/internal/enable_copy.h"
+
 namespace david {
 namespace internal {
 
 template <typename T>
-class optional_rep {
+class optional_storage {
  public:
-  optional_rep() = default;
+  optional_storage() = default;
 
  protected:
   bool engaged_ = false;
   // TODO: this doesn't work for non-trivially default constructable objects.
   // Let's use an union here and some traits magic here.
   T obj_;
+
+  // Destroys the underlying associated object.
+  // This method is only used for non-trivially destructible objects.
+  void destroy() noexcept {
+    if (engaged_) {
+      engaged_ = false;
+      obj_.~T();
+    }
+  }
 };
 
 template <typename T,
-          bool copy_constructible = std::is_copy_constructible<T>::value,
-          bool trivially_copy_constructible =
-              std::is_trivially_copy_constructible<T>::value>
-class optional_constructors;
+          bool =  // trivial copy
+          std::is_trivially_copy_constructible<T>::value&&
+              std::is_trivially_copy_assignable<T>::value>
+class optional_base;
 
 // Trivially copy constructible types shouldn't have a copy constructor,
 // otherwise it's no longer a trivial constructor.
 template <typename T>
-class optional_constructors<T, true, true> : public optional_rep<T> {
+class optional_base<T, true> : public optional_storage<T> {
  public:
+  optional_base() noexcept = default;
 };
 
 template <typename T>
-class optional_constructors<T, true, false> : public optional_rep<T> {
+class optional_base<T, false> : public optional_storage<T> {
  public:
-  optional_constructors() noexcept = default;
-  optional_constructors(const optional_constructors& other) {
+  optional_base() noexcept = default;
+  optional_base(const optional_base& other) {
     this->engaged_ = other.engaged_;
     if (other.engaged_) {
       this->obj_ = other.obj_;
     }
   }
-};
-
-// Non copy constructible types cannot be instantiated.
-template <typename T, bool unused>
-class optional_constructors<T, false, unused> : public optional_rep<T> {
- public:
-  optional_constructors() noexcept = default;
-  optional_constructors(const optional_constructors&) = delete;
+  optional_base& operator=(const optional_base& other) {
+    if (other.engaged_) {
+      this->obj_ = other.obj_;
+    } else {
+      this->destroy();
+    }
+  }
 };
 
 }  // namespace internal
@@ -65,7 +76,10 @@ static const nullopt_t nullopt{0};
 
 // Interface from https://en.cppreference.com/w/cpp/utility/optional
 template <typename T>
-class optional : public internal::optional_constructors<T> {
+class optional
+    : private internal::optional_base<T>,
+      private internal::enable_copy<std::is_copy_constructible<T>::value,
+                                    std::is_copy_assignable<T>::value> {
  public:
   // Constructors.
   optional() noexcept = default;

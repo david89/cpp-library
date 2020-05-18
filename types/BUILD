@@ -1,7 +1,9 @@
 cc_library(
     name = "optional_lib",
     hdrs = ["optional.h"],
-    deps = [],
+    deps = [
+        "//types/internal:enable_copy_lib",
+    ],
 )
 
 cc_test(
