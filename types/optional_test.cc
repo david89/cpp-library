@@ -31,9 +31,21 @@ TEST(Optional, IsTriviallyCopyConstructible) {
   EXPECT_FALSE(b);
 }
 
+TEST(Optional, IsTriviallyMoveConstructible) {
+  optional<int> a;
+  optional<int> b(a);
+  EXPECT_FALSE(std::move(b));
+}
+
 TEST(Optional, IsTriviallyCopyAssignable) {
   optional<int> a;
   optional<int> b = a;
+  EXPECT_FALSE(b);
+}
+
+TEST(Optional, IsTriviallyMoveAssignable) {
+  optional<int> a;
+  optional<int> b = std::move(a);
   EXPECT_FALSE(b);
 }
 
@@ -43,9 +55,21 @@ TEST(Optional, IsNonTriviallyCopyConstructible) {
   EXPECT_FALSE(b);
 }
 
+TEST(Optional, IsNonTriviallyMoveConstructible) {
+  optional<std::string> a;
+  optional<std::string> b(std::move(a));
+  EXPECT_FALSE(b);
+}
+
 TEST(Optional, IsNonTriviallyCopyAssignable) {
   optional<std::string> a;
   optional<std::string> b = a;
+  EXPECT_FALSE(b);
+}
+
+TEST(Optional, IsNonTriviallyMoveAssignable) {
+  optional<std::string> a;
+  optional<std::string> b = std::move(a);
   EXPECT_FALSE(b);
 }
 
@@ -64,12 +88,6 @@ TEST(Optional, IsNonCopyAssignable) {
 TEST(Optional, AssignedWithNullopt) {
   optional<int> a = nullopt;
   EXPECT_FALSE(a);
-}
-
-TEST(Optional, IsTriviallyMoveConstructible) {
-  optional<std::unique_ptr<int>> a;
-  optional<std::unique_ptr<int>> b(std::move(a));
-  EXPECT_FALSE(b);
 }
 
 }  // namespace
