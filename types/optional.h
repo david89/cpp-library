@@ -82,7 +82,11 @@ class optional_base<T, true, false> : public optional_storage<T> {
     }
   }
   optional_base& operator=(optional_base&& other) noexcept {
+    // TODO: not sure if this is compliant with
+    // https://en.cppreference.com/w/cpp/utility/optional/operator%3D
+    // Specially when other is engaged.
     if (other.engaged_) {
+      // TODO add a construct function.
       this->engaged_ = true;
       this->obj_ = std::move(other.obj_);
     } else {
